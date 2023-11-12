@@ -75,9 +75,7 @@
     "ts-mocha": "^10.0.0",
     "ts-node": "^10.9.1",
     "typechain": "^8.2.0",
-    "typescript": "^5.2.2",
-    "yarn": "^1.22.19",
-    "yarn-upgrade-all": "^0.7.2"
+    "typescript": "^5.2.2"
   },
   "peerDependencies": {},
   "dependencies": {

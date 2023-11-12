@@ -1,4 +1,4 @@
-import { weiToString } from "@astrolabs/hardhat";
+import { shortenAddress, weiToString } from "@astrolabs/hardhat";
 
 import * as OneInch from "./OneInch";
 import * as ZeroX from "./ZeroX";
@@ -10,6 +10,7 @@ import * as Socket from "./Socket";
 
 import { Aggregator, AggregatorId, ISwapperParams, ITransactionRequestWithEstimate } from "./types";
 
+// aggregatorId to aggregator mapping used by meta-aggregating getTransactionRequest
 export const aggregatorById: { [key: string]: Aggregator } = {
   [AggregatorId.ONE_INCH]: <Aggregator>OneInch,
   [AggregatorId.ZERO_X]: <Aggregator>ZeroX,
@@ -20,10 +21,20 @@ export const aggregatorById: { [key: string]: Aggregator } = {
   [AggregatorId.SOCKET]: <Aggregator>Socket,
 };
 
+/**
+ * Extracts the `callData` from the `transactionRequest` (if any).
+ * @param o - The swapper parameters.
+ * @returns A promise that resolves to a string representing the call data.
+ */
 export async function getCallData(o: ISwapperParams): Promise<string> {
   return (await getTransactionRequest(o))?.data?.toString() ?? ""; // res.to == router address
 }
 
+/**
+ * Gets the meta-aggregated (best) transaction request for given swap parameters from at least one aggregator.
+ * @param o - The swapper parameters.
+ * @returns A promise that resolves to the transaction request with an estimate, or `undefined` if none found.
+ */
 export async function getTransactionRequest(o: ISwapperParams): Promise<ITransactionRequestWithEstimate|undefined> {
   o.aggregatorId ??= [AggregatorId.LIFI, AggregatorId.SQUID, AggregatorId.SOCKET];
   o.project ??= "astrolab";
@@ -65,21 +76,25 @@ export async function getTransactionRequest(o: ISwapperParams): Promise<ITransac
   return best;
 }
 
-export function shortAddress(address: string) {
-  return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
-}
-
+// round wei to a compact printable number (exponential notation)
 export function compactWei(wei: number|string|BigInt) {
   wei = Math.round(Number(wei)/1e4) * 1e4;
   return wei.toExponential().replace(/\.0+e/, 'e');
 }
 
+/**
+ * Converts swapper parameters into a human-readable string format.
+ * @param o - The swapper parameters.
+ * @param callData - The call data (optional).
+ * @returns A human-readable string representation of the swapper parameters.
+ */
 export function swapperParamsToString(o: ISwapperParams, callData?: string) {
-  return `${o.aggregatorId ? o.aggregatorId : 'Meta'} swap: ${o.inputChainId}:${shortAddress(o.input)} (${compactWei(Number(o.amountWei))} wei) -> ${
-      o.outputChainId ?? o.inputChainId}:${shortAddress(o.output)}${
+  return `${o.aggregatorId ? o.aggregatorId : 'Meta'} swap: ${o.inputChainId}:${shortenAddress(o.input)} (${compactWei(Number(o.amountWei))} wei) -> ${
+      o.outputChainId ?? o.inputChainId}:${shortenAddress(o.output)}${
         callData ? ` (callData: ${callData.substring(0, 32)}... ${callData.length}bytes)` : ""}`;
 }
 
+// estimate normalization from bridge/dex aggregator consisting of the transactionRequest and raw estimated transaction output
 export interface IEstimateParams {
   tr: ITransactionRequestWithEstimate;
   inputAmountWei: bigint;
@@ -88,6 +103,11 @@ export interface IEstimateParams {
   outputDecimals: number;
 }
 
+/**
+ * Normalizes `IEstimateParams` into `ITransactionRequestWithEstimate` with comparable exchange rate and estimated output.
+ * @param o - The estimate parameters.
+ * @returns The transaction request with estimates.
+ */
 export function addEstimatesToTransactionRequest(o: IEstimateParams): ITransactionRequestWithEstimate {
   const roundExps = [Math.max(o.inputDecimals - 8, 3), Math.max(o.outputDecimals - 8, 3)];
   const amount = Number(BigInt(o.inputAmountWei) / BigInt(10 ** roundExps[0])) / (10 ** (o.inputDecimals - roundExps[0]));
