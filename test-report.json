@@ -1,0 +1,64 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 1,
+    "passes": 0,
+    "pending": 0,
+    "failures": 1,
+    "start": "2023-11-08T22:00:01.517Z",
+    "end": "2023-11-08T22:00:41.921Z",
+    "duration": 40404
+  },
+  "tests": [
+    {
+      "title": "Multiple cases",
+      "fullTitle": "swapper.contract.test Fuzzy monochain meta-swapping (automated best route) Multiple cases",
+      "file": "/Users/derpa/Work/astrolab/swapper/test/integration/swapper.contract.test.ts",
+      "duration": 21393,
+      "currentRetry": 0,
+      "err": {
+        "message": "Unspecified AssertionError",
+        "showDiff": false,
+        "actual": null,
+        "stack": "AssertionError: Unspecified AssertionError\n    at _swap (test/integration/swapper.contract.test.ts:108:9)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async _swap (test/integration/swapper.contract.test.ts:79:5)\n    at async Context.<anonymous> (test/integration/swapper.contract.test.ts:144:9)",
+        "multiple": [
+          {
+            "name": "AssertionError",
+            "message": "Unspecified AssertionError",
+            "showDiff": false,
+            "actual": null,
+            "multiple": "AssertionError: Unspecified AssertionError",
+            "stack": "AssertionError: Unspecified AssertionError\n    at _swap (test/integration/swapper.contract.test.ts:108:9)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async _swap (test/integration/swapper.contract.test.ts:79:5)\n    at async Context.<anonymous> (test/integration/swapper.contract.test.ts:144:9)"
+          }
+        ]
+      }
+    }
+  ],
+  "pending": [],
+  "failures": [
+    {
+      "title": "Multiple cases",
+      "fullTitle": "swapper.contract.test Fuzzy monochain meta-swapping (automated best route) Multiple cases",
+      "file": "/Users/derpa/Work/astrolab/swapper/test/integration/swapper.contract.test.ts",
+      "duration": 21393,
+      "currentRetry": 0,
+      "err": {
+        "message": "Unspecified AssertionError",
+        "showDiff": false,
+        "actual": null,
+        "stack": "AssertionError: Unspecified AssertionError\n    at _swap (test/integration/swapper.contract.test.ts:108:9)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async _swap (test/integration/swapper.contract.test.ts:79:5)\n    at async Context.<anonymous> (test/integration/swapper.contract.test.ts:144:9)",
+        "multiple": [
+          {
+            "name": "AssertionError",
+            "message": "Unspecified AssertionError",
+            "showDiff": false,
+            "actual": null,
+            "multiple": "AssertionError: Unspecified AssertionError",
+            "stack": "AssertionError: Unspecified AssertionError\n    at _swap (test/integration/swapper.contract.test.ts:108:9)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async _swap (test/integration/swapper.contract.test.ts:79:5)\n    at async Context.<anonymous> (test/integration/swapper.contract.test.ts:144:9)"
+          }
+        ]
+      }
+    }
+  ],
+  "passes": []
+}

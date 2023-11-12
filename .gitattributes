@@ -1,0 +1,89 @@
+# All following extesions will be excluded from diffs (git difftool)
+
+# Binary Files
+*.exe binary
+*.dll binary
+*.so binary
+*.o binary
+*.a binary
+*.zip binary
+*.tar binary
+*.tar.gz binary
+*.rar binary
+*.7z binary
+*.sqlite binary
+*.db binary
+
+# Fonts
+*.ttf binary
+*.otf binary
+*.woff binary
+*.woff2 binary
+*.eot binary
+
+# Media Files
+*.mp3 binary
+*.wav binary
+*.ogg binary
+*.flac binary
+*.m4a binary
+*.mp4 binary
+*.mkv binary
+*.flv binary
+*.webm binary
+*.mov binary
+*.avi binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.svg binary
+*.bmp binary
+*.tiff binary
+*.ico binary
+*.webp binary
+
+# Design & Artwork Files
+*.psd binary
+*.ai binary
+*.ae binary
+*.indd binary
+*.cdr binary
+*.sketch binary
+*.xcf binary
+
+# Document Files
+*.doc binary
+*.docx binary
+*.odt binary
+*.xls binary
+*.xlsx binary
+*.ods binary
+*.ppt binary
+*.pptx binary
+*.odp binary
+*.pdf binary
+
+# 3D Models
+*.obj binary
+*.fbx binary
+*.dae binary
+
+# Build & Cache Files
+node_modules/ binary
+__pycache__/ binary
+*.pyc binary
+*.class binary
+*.jar binary
+*.war binary
+*.log binary
+
+# Temporary & Backup Files
+.DS_Store binary
+Thumbs.db binary
+*.swp binary
+*.swo binary
+*~ binary
+*.bak binary
+
+# Add more as needed based on the project's requirements

@@ -1,0 +1,113 @@
+# ide
+.idea
+.vscode
+
+# os
+.DS_Store
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# config
+.env
+.env.local
+.env.bench
+.env.prod
+.env.production
+
+# Translations
+*.mo
+*.pot
+*.log
+*.trace
+*.dat
+*.swp
+*.swap
+
+# binaries
+*.exe
+*.ex4
+*.ex5
+*.jar
+*.bin
+# native linking ext
+*.so
+*.so.1
+*.dylib
+*.dll
+*.a
+
+.env
+.env.development
+.env.production
+
+# build / packaging
+env/
+build/
+develop-eggs/
+dist/
+dev-dist/
+dist-ssr/
+target/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+deployments/
+artifacts/
+.artifacts/
+*.local
+.history
+docs/_build/
+*.egg-info/
+.installed.cfg
+*.egg
+*.manifest
+*.spec
+
+# node / js
+node_modules
+.npm
+.grunt
+.lock-wscript
+*.lock
+*-lock.*
+
+# python
+venv/
+__pycache__/
+*.py[cod]
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache/
+cache/
+.temp
+temp
+.tmp
+tmp
+nosetests.xml
+coverage
+coverage.*
+*,cover
+.typechain
+typechain
+typechain-types
+test-results/
+.hypothesis/
+reports/
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.*
