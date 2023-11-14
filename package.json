@@ -31,10 +31,10 @@
     "clean": "yarn rimraf dist internal types *.{d.ts,js}{,.map} build-test tsconfig.tsbuildinfo"
   },
   "files": [
-    "dist/src/",
     "src/",
     "internal/",
     "types/",
+    "/contracts/**/*.sol",
     "*.d.ts",
     "*.d.ts.map",
     "*.js",
@@ -43,10 +43,11 @@
     "README.md"
   ],
   "devDependencies": {
-    "@astrolabs/hardhat": "^1.0.57",
+    "@astrolabs/hardhat": "^1.0.58",
     "@nomicfoundation/hardhat-ethers": "^3.0.4",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.9",
     "@nomicfoundation/hardhat-verify": "^2.0.0",
+    "@nomiclabs/hardhat-etherscan": "^3.1.7",
     "@openzeppelin/contracts": "^5.0.0",
     "@tenderly/hardhat-tenderly": "^1.7.7",
     "@typechain/ethers-v6": "^0.4.0",

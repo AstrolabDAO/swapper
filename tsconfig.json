@@ -7,7 +7,7 @@
     "rootDir": "./",
     "baseUrl": "./",
     "paths": {
-      "@/": ["./src/"]
+      "@/": ["./src/", "./contracts/"],
     },
     "strict": true,
     "moduleResolution": "node",
@@ -16,6 +16,7 @@
   },
   "include": [
     "./src/**/*",
+    "./contracts/**/*",
     "./test/**/*",
     "*.ts",
   ],
