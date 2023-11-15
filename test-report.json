@@ -5,22 +5,22 @@
     "passes": 0,
     "pending": 0,
     "failures": 1,
-    "start": "2023-11-14T12:28:36.921Z",
-    "end": "2023-11-14T12:35:24.895Z",
-    "duration": 407974
+    "start": "2023-11-15T10:00:04.323Z",
+    "end": "2023-11-15T10:02:28.346Z",
+    "duration": 144023
   },
   "tests": [
     {
       "title": "Multiple cases",
       "fullTitle": "swapper.contract.test Fuzzy monochain meta-swapping (automated best route) Multiple cases",
       "file": "/Users/derpa/Work/astrolab/swapper/test/integration/swapper.contract.test.ts",
-      "duration": 262693,
+      "duration": 106826,
       "currentRetry": 0,
       "err": {
         "message": "Unspecified AssertionError",
         "showDiff": false,
         "actual": null,
-        "stack": "AssertionError: Unspecified AssertionError\n    at _swap (test/integration/swapper.contract.test.ts:110:9)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async _swap (test/integration/swapper.contract.test.ts:81:5)\n    at async Context.<anonymous> (test/integration/swapper.contract.test.ts:146:9)",
+        "stack": "AssertionError: Unspecified AssertionError\n    at _swap (test/integration/swapper.contract.test.ts:110:9)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async Context.<anonymous> (test/integration/swapper.contract.test.ts:146:9)",
         "multiple": [
           {
             "name": "AssertionError",
@@ -28,7 +28,7 @@
             "showDiff": false,
             "actual": null,
             "multiple": "AssertionError: Unspecified AssertionError",
-            "stack": "AssertionError: Unspecified AssertionError\n    at _swap (test/integration/swapper.contract.test.ts:110:9)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async _swap (test/integration/swapper.contract.test.ts:81:5)\n    at async Context.<anonymous> (test/integration/swapper.contract.test.ts:146:9)"
+            "stack": "AssertionError: Unspecified AssertionError\n    at _swap (test/integration/swapper.contract.test.ts:110:9)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async Context.<anonymous> (test/integration/swapper.contract.test.ts:146:9)"
           }
         ]
       }
@@ -40,13 +40,13 @@
       "title": "Multiple cases",
       "fullTitle": "swapper.contract.test Fuzzy monochain meta-swapping (automated best route) Multiple cases",
       "file": "/Users/derpa/Work/astrolab/swapper/test/integration/swapper.contract.test.ts",
-      "duration": 262693,
+      "duration": 106826,
       "currentRetry": 0,
       "err": {
         "message": "Unspecified AssertionError",
         "showDiff": false,
         "actual": null,
-        "stack": "AssertionError: Unspecified AssertionError\n    at _swap (test/integration/swapper.contract.test.ts:110:9)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async _swap (test/integration/swapper.contract.test.ts:81:5)\n    at async Context.<anonymous> (test/integration/swapper.contract.test.ts:146:9)",
+        "stack": "AssertionError: Unspecified AssertionError\n    at _swap (test/integration/swapper.contract.test.ts:110:9)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async Context.<anonymous> (test/integration/swapper.contract.test.ts:146:9)",
         "multiple": [
           {
             "name": "AssertionError",
@@ -54,7 +54,7 @@
             "showDiff": false,
             "actual": null,
             "multiple": "AssertionError: Unspecified AssertionError",
-            "stack": "AssertionError: Unspecified AssertionError\n    at _swap (test/integration/swapper.contract.test.ts:110:9)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async _swap (test/integration/swapper.contract.test.ts:81:5)\n    at async Context.<anonymous> (test/integration/swapper.contract.test.ts:146:9)"
+            "stack": "AssertionError: Unspecified AssertionError\n    at _swap (test/integration/swapper.contract.test.ts:110:9)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async Context.<anonymous> (test/integration/swapper.contract.test.ts:146:9)"
           }
         ]
       }

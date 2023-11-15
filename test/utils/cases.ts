@@ -1,7 +1,7 @@
 import addresses from "./addresses";
-import { ISwapperParams, AggregatorId, ITransactionRequestWithEstimate } from "../../src/types";
-import { getTransactionRequest, swapperParamsToString } from "../../src/";
-import { TransactionRequest, ethers, network, weiToString } from "@astrolabs/hardhat";
+import { ISwapperParams, AggregatorId, ITransactionRequestWithEstimate, TransactionRequest } from "../../src/types";
+import { getTransactionRequest, swapperParamsToString, weiToString } from "../../src/";
+import { ethers, network } from "@astrolabs/hardhat";
 
 const rndToken = (chainId: number) => {
   const inputs = Object.keys(addresses[chainId].tokens);

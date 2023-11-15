@@ -1,6 +1,5 @@
-import { ITransactionRequestWithEstimate } from "../types";
-import * as qs from "qs";
-import { ISwapperParams, validateQuoteParams } from "../types";
+import qs from "qs";
+import { ISwapperParams, ITransactionRequestWithEstimate, validateQuoteParams } from "../types";
 
 // 0x specific types
 export interface IQuoteParams {

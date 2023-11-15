@@ -1,5 +1,4 @@
-import { TransactionRequest } from "@astrolabs/hardhat";
-import { ITransactionRequestWithEstimate } from "../types";
+import { ITransactionRequestWithEstimate, TransactionRequest } from "../types";
 import {
   ISwapperParams,
   validateQuoteParams,

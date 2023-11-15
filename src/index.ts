@@ -1,5 +1,3 @@
-import { shortenAddress, weiToString } from "@astrolabs/hardhat";
-
 import * as OneInch from "./OneInch";
 import * as ZeroX from "./ZeroX";
 import * as ParaSwap from "./ParaSwap";
@@ -8,7 +6,7 @@ import * as Squid from "./Squid";
 import * as LiFi from "./LiFi";
 import * as Socket from "./Socket";
 
-import { Aggregator, AggregatorId, ISwapperParams, ITransactionRequestWithEstimate } from "./types";
+import { Aggregator, AggregatorId, ISwapperParams, ITransactionRequestWithEstimate, Stringifiable } from "./types";
 
 // aggregatorId to aggregator mapping used by meta-aggregating getTransactionRequest
 export const aggregatorById: { [key: string]: Aggregator } = {
@@ -38,7 +36,7 @@ export async function getCallData(o: ISwapperParams): Promise<string> {
 export async function getTransactionRequest(o: ISwapperParams): Promise<ITransactionRequestWithEstimate|undefined> {
   o.aggregatorId ??= [AggregatorId.LIFI, AggregatorId.SQUID, AggregatorId.SOCKET];
   o.project ??= "astrolab";
-  o.amountWei = weiToString(o.amountWei);
+  o.amountWei = weiToString(o.amountWei as any);
   o.maxSlippage ||= 2_000; // NOTE: 20% in bps (pessimistic slippage for tests)
   if (!(o.aggregatorId instanceof Array))
     o.aggregatorId = [o.aggregatorId];
@@ -76,10 +74,26 @@ export async function getTransactionRequest(o: ISwapperParams): Promise<ITransac
   return best;
 }
 
+export const weiToString = (wei: string|number|bigint|Stringifiable) => {
+  if (typeof wei === "string") {
+      return wei;
+  } else if (typeof wei === "number") {
+      wei = BigInt(Math.round(wei));
+    return wei.toString();
+  } else {
+    return wei.toString();
+  }
+};
+
 // round wei to a compact printable number (exponential notation)
 export function compactWei(wei: number|string|BigInt) {
   wei = Math.round(Number(wei)/1e4) * 1e4;
   return wei.toExponential().replace(/\.0+e/, 'e');
+}
+
+export function shortenAddress(address: string, start=4, end=4, sep="."): string {
+  const len = address.length;
+  return address.slice(0, 2 + start) + sep + address.slice(len - end, len);
 }
 
 /**

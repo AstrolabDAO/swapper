@@ -1,8 +1,6 @@
-import { ITransactionRequestWithEstimate } from "../types";
 import qs from "qs";
-import { ISwapperParams, validateQuoteParams } from "../types";
-import { TransactionRequest } from "@astrolabs/hardhat";
 import { addEstimatesToTransactionRequest } from "../";
+import { ISwapperParams, ITransactionRequestWithEstimate, TransactionRequest, validateQuoteParams } from "../types";
 
 // Squid specific types
 interface IQuoteParams {

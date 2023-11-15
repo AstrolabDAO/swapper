@@ -1,7 +1,6 @@
-import { ITransactionRequestWithEstimate } from "../types";
+import { ITransactionRequestWithEstimate, TransactionRequest } from "../types";
 import qs from "qs";
 import { ISwapperParams, validateQuoteParams } from "../types";
-import { TransactionRequest } from "@astrolabs/hardhat";
 import { addEstimatesToTransactionRequest } from "../";
 
 // LiFi specific types

@@ -1,7 +1,6 @@
-import { addEstimatesToTransactionRequest } from "../";
-import { ITransactionRequestWithEstimate } from "../types";
-import { ISwapperParams, validateQuoteParams } from "../types";
 import qs from "qs";
+import { addEstimatesToTransactionRequest } from "../";
+import { ISwapperParams, ITransactionRequestWithEstimate, validateQuoteParams } from "../types";
 
 // Socket specific types
 

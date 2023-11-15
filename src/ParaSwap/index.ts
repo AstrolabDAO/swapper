@@ -1,7 +1,5 @@
-import { ITransactionRequestWithEstimate } from "../types";
 import qs from "qs";
-import { ISwapperParams, validateQuoteParams } from "../types";
-import { BigNumber } from "ethers";
+import { ISwapperParams, ITransactionRequestWithEstimate, validateQuoteParams } from "../types";
 
 // PasarSwap specific types
 interface ISwapExchange {
@@ -156,7 +154,7 @@ const convertParams = (o: ISwapperParams): IQuoteParams => ({
 // NB: inspired by official docs https://developers.paraswap.network/api/examples
 export async function getTransactionRequest(o: ISwapperParams): Promise<ITransactionRequestWithEstimate|undefined> {
   if (!validateQuoteParams(o)) throw new Error("invalid input");
-  o.amountWei = BigNumber.from(o.amountWei);
+  o.amountWei = BigInt(o.amountWei.toString());
   const priceRoute = await getQuote(o);
   const params = convertParams(o);
   const paramsWithRoute = { ...params, priceRoute };

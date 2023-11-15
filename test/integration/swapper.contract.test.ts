@@ -1,13 +1,12 @@
 import { BigNumber, Contract, Signer } from "ethers";
 import { MaxUint256 } from "@ethersproject/constants";
 import { assert } from "chai";
-import { weiToString } from "@astrolabs/hardhat";
 
 import * as dotenv from "dotenv";
 dotenv.config({ override: true });
 
 import { ethers, network, setBalances, TransactionRequest, deploy, getDeployer, config, changeNetwork } from "@astrolabs/hardhat";
-import { getTransactionRequest, swapperParamsToString } from "../../src/";
+import { getTransactionRequest, swapperParamsToString, weiToString } from "../../src/";
 import addresses, { ChainAddresses } from "../utils/addresses";
 import { cases, filterCases, fuzzCases } from "../utils/cases";
 import { AggregatorId, ISwapperParams } from "../../src/types";
@@ -47,7 +46,8 @@ async function _swap(o: ISwapperParams) {
   }
 
   o.payer ||= deployer!.address;
-  o.amountWei = BigNumber.from(weiToString(o.amountWei));
+  const amountWei = BigNumber.from(o.amountWei as any);
+  o.amountWei = amountWei;
   o.inputChainId ??= network.config.chainId!;
 
   let input: Contract;
@@ -59,10 +59,10 @@ async function _swap(o: ISwapperParams) {
     const symbol = await input.symbol();
     if (["ETH", "BTC"].some(s => symbol.includes(s))) {
       // limit the size of a swap to 10 ETH/BTC
-      if (o.amountWei.gt(maxTopup))
+      if (amountWei.gt(maxTopup))
         o.amountWei = BigNumber.from(maxTopup);
     }
-    assert(nativeBalance.gt(o.amountWei));
+    assert(nativeBalance.gt(amountWei));
     const wrappedBalanceBefore = await input.balanceOf(o.payer);
     await input.deposit({ value: o.amountWei });
     const wrapped = (await input.balanceOf(o.payer)).sub(wrappedBalanceBefore);
