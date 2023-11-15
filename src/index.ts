@@ -66,10 +66,10 @@ export async function getTransactionRequest(o: ISwapperParams): Promise<ITransac
   const best = trs[0];
 
   if (best?.data) {
-    // get rid of testPayer in the transactionRequest
-    (best.data as string)?.replace(best.from!.substring(2), o.payer.substring(2));
     // replace o.testPayer with o.payer
     best.from = o.payer;
+    // get rid of testPayer in the transactionRequest
+    (best.data as string)?.replace(best.from!.substring(2), o.payer.substring(2));
   }
   return best;
 }

@@ -17,11 +17,11 @@
   "include": [
     "./src/**/*",
     "./contracts/**/*",
-    "./test/**/*",
-    "*.ts",
+    "./index.ts"
   ],
   "exclude": [
     "node_modules",
+    "hardhat.config.ts",
     "dist",
     "cache",
     "artifacts"
