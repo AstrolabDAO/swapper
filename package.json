@@ -1,6 +1,6 @@
 {
   "name": "@astrolabs/swapper",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "repository": "https://github.com/AstrolabFinance/swapper",
@@ -24,21 +24,15 @@
     "prettier": "yarn prettier \"**/*.{js,md,json}\"",
     "test-unit": "yarn ts-mocha --timeout 120000 --recursive \"test/unit/**/*.ts\" --exit",
     "test-integration": "yarn ts-mocha --require hardhat/register --timeout 120000 --recursive \"test/integration/**/*.ts\" --exit",
-    "build": "tsc --build .",
+    "build": "tsc --build . && cp -r contracts dist/contracts",
     "deploy-tenderly": "yarn hardhat run --network tenderly test/integration/scripts/deploy.ts",
     "test-tenderly": "yarn hardhat test --network tenderly test/integration/swapper.contract.test.ts --grep 'Fuzzy monochain'",
     "prepublishOnly": "yarn build",
     "clean": "yarn rimraf dist internal types *.{d.ts,js}{,.map} build-test tsconfig.tsbuildinfo"
   },
   "files": [
-    "src/",
-    "internal/",
-    "types/",
+    "dist/",
     "/contracts/**/*.sol",
-    "*.d.ts",
-    "*.d.ts.map",
-    "*.js",
-    "*.js.map",
     "LICENSE",
     "README.md"
   ],
