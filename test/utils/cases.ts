@@ -74,6 +74,15 @@ export const cases = (): ISwapperParams[] => {
           testPayer: addresses[250].accounts!.impersonate,
           payer: "",
         },
+        {
+          aggregatorId,
+          inputChainId: 42161, // Arbitrum One
+          input: addresses[42161].tokens.DAI,
+          output: addresses[42161].tokens.USDCE,
+          amountWei: 100 * 1e18, // string to prevent overflow
+          testPayer: addresses[42161].accounts!.impersonate,
+          payer: "",
+        },
       ],
     );
   }
