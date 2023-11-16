@@ -33,7 +33,7 @@ export async function getCallData(o: ISwapperParams): Promise<string> {
  * @param o - The swapper parameters.
  * @returns A promise that resolves to the transaction request with an estimate, or `undefined` if none found.
  */
-export async function getTransactionRequest(o: ISwapperParams): Promise<ITransactionRequestWithEstimate|undefined> {
+export async function getAllTransactionRequests(o: ISwapperParams): Promise<ITransactionRequestWithEstimate[]|undefined> {
   o.aggregatorId ??= [AggregatorId.LIFI, AggregatorId.SQUID, AggregatorId.SOCKET];
   o.project ??= "astrolab";
   o.amountWei = weiToString(o.amountWei as any);
@@ -60,19 +60,21 @@ export async function getTransactionRequest(o: ISwapperParams): Promise<ITransac
   // find best exchange rate
   trs = trs.sort((tr1, tr2) => tr1!.estimatedExchangeRate! < tr2!.estimatedExchangeRate! ? 1 : -1);
 
+  for (const tr of trs) {
+    if (tr?.data) {
+      // replace o.testPayer with o.payer
+      tr.from = o.payer;
+      // get rid of testPayer in the transactionRequest
+      (tr.data as string)?.replace(tr.from!.substring(2), o.payer.substring(2));
+    }
+  }
   console.log(`${trs.length} routes found for ${swapperParamsToString(o)}:\n${
     trs.map(tr => tr.aggregatorId).join(" > ")}`);
-
-  const best = trs[0];
-
-  if (best?.data) {
-    // replace o.testPayer with o.payer
-    best.from = o.payer;
-    // get rid of testPayer in the transactionRequest
-    (best.data as string)?.replace(best.from!.substring(2), o.payer.substring(2));
-  }
-  return best;
+  return trs;
 }
+
+export const getTransactionRequest = async (o: ISwapperParams): Promise<ITransactionRequestWithEstimate|undefined> =>
+  (await getAllTransactionRequests(o))?.[0];
 
 export const weiToString = (wei: string|number|bigint|Stringifiable) => {
   if (typeof wei === "string") {
