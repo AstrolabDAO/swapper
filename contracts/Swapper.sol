@@ -5,17 +5,22 @@ pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "hardhat/console.sol";
+import "./BitMask.sol";
 
 /// @title Swapper
 /// @dev Contract to proxy erc20 token swaps through a specified router
 contract Swapper is Ownable {
 	using SafeERC20 for IERC20Metadata;
+	using BitMask for uint256;
 
-	bool public restrictCaller = false; // restrict swap to whitelisted callers
-	bool public restrictRouter = true; // restrict router to whitelisted routers
-	bool public approveMax = true; // default to router max allowance (gas saving)
-	bool public autoRevoke = false; // revoke approval after every swap (no need to trust router)
+	/// @notice restrictions bitmask, positions:
+	// 0 = restrictCaller
+	// 1 = restrictRouter
+	// 2 = restrictInput
+	// 3 = restrictOutput
+	// 4 = approveMax
+	// 5 = autoRevoke
+	uint256 private restrictions = 0;
 	mapping(address => bool) private whitelist; // whitelisted addresses (for tokens and callers)
 
 	// Events
@@ -29,30 +34,49 @@ contract Swapper is Ownable {
 	event Whitelisted(address indexed account); // caller/asset/router whitelist
 	event RemovedFromWhitelist(address indexed account);
 
-	constructor() Ownable(msg.sender) {}
+	error CallRestricted();
+	error RouterError();
+	error SlippageTooHigh();
+
+	constructor() Ownable(msg.sender) {
+		restrictions.setBit(1); // restrictRouter
+		restrictions.setBit(4); // approveMax
+	}
 
 	/// @notice Toggles caller restriction (only whitelisted can swap)
 	/// @param _restrictCaller Boolean value to set restrictCaller
 	function setCallerRestriction(bool _restrictCaller) external onlyOwner {
-		restrictCaller = _restrictCaller;
+		restrictions = _restrictCaller ? restrictions.setBit(0) : restrictions.resetBit(0);
 	}
 
 	/// @notice Toggles router restriction (only whitelisted can be used as router)
 	/// @param _restrictRouter Boolean value to set restrictRouter
 	function setRouterRestriction(bool _restrictRouter) external onlyOwner {
-		restrictRouter = _restrictRouter;
+		restrictions = _restrictRouter ? restrictions.setBit(1) : restrictions.resetBit(1);
+	}
+
+	/// @notice Toggles input token restriction
+	/// @param _inputRestiction Boolean value to set inputRestiction
+	function setInputRestriction(bool _inputRestiction) external onlyOwner {
+		restrictions = _inputRestiction ? restrictions.setBit(2) : restrictions.resetBit(2);
+	}
+
+	/// @notice Toggles output token restriction
+	/// @param _outputRestiction Boolean value to set outputRestiction
+	function setOutputRestriction(bool _outputRestiction) external onlyOwner {
+		restrictions = _outputRestiction ? restrictions.setBit(3) : restrictions.resetBit(3);
 	}
 
 	/// @notice Toggles default max approval (approve max amount to router on first use)
 	/// @param _approveMax Boolean value to set approveMax
 	function setApproveMax(bool _approveMax) external onlyOwner {
-		approveMax = _approveMax;
+		restrictions = _approveMax ? restrictions.setBit(4) : restrictions.resetBit(4);
 	}
 
 	/// @notice Toggles auto revoke approval (revoke router approval after every swap)
 	/// @param _autoRevoke Boolean value to set autoRevoke
 	function setAutoRevoke(bool _autoRevoke) external onlyOwner {
-		autoRevoke = _autoRevoke;
+		restrictions = _autoRevoke ? restrictions.setBit(5) : restrictions.resetBit(5);
 	}
 
 	/// @notice Adds an address to the whitelist (caller/asset/router)
@@ -71,9 +95,33 @@ contract Swapper is Ownable {
 
 	/// @notice Checks if an address is whitelisted (caller/asset/router)
 	/// @param _address Address to check
-	/// @return Boolean indicating whether the address is whitelisted
-	function isWhitelisted(address _address) external view returns (bool) {
+	/// @return Boolean indicating whether the whitelisting is whitelisted
+	function isWhitelisted(address _address) public view returns (bool) {
 		return whitelist[_address];
+	}
+
+	function isCallerRestricted(address _caller) public view returns (bool) {
+		return restrictions.getBit(0) && !isWhitelisted(_caller);
+	}
+
+	function isRouterRestricted(address _router) public view returns (bool) {
+		return restrictions.getBit(1) && !isWhitelisted(_router);
+	}
+
+	function isInputRestricted(address _input) public view returns (bool) {
+		return restrictions.getBit(2) && !isWhitelisted(_input);
+	}
+
+	function isOutputRestricted(address _output) public view returns (bool) {
+		return restrictions.getBit(3) && !isWhitelisted(_output);
+	}
+
+	function isApproveMax() public view returns (bool) {
+		return restrictions.getBit(4);
+	}
+
+	function isAutoRevoke() public view returns (bool) {
+		return restrictions.getBit(5);
 	}
 
 	/// @notice executes a single swap
@@ -93,18 +141,11 @@ contract Swapper is Ownable {
 		address _targetRouter,
 		bytes memory _callData
 	) internal returns (uint256 received) {
-		require(
-			whitelist[_input] && whitelist[_output],
-			"asset not whitelisted"
-		);
-		require(
-			!restrictRouter || whitelist[_targetRouter],
-			"router not whitelisted"
-		);
-		require(
-			!restrictCaller || whitelist[msg.sender],
-			"caller not whitelisted"
-		);
+		if (isInputRestricted(_input)
+			|| isOutputRestricted(_output)
+			|| isRouterRestricted(_targetRouter)
+			|| isCallerRestricted(msg.sender)
+		) revert CallRestricted();
 
 		IERC20Metadata input = IERC20Metadata(_input);
 		IERC20Metadata output = IERC20Metadata(_output);
@@ -114,20 +155,19 @@ contract Swapper is Ownable {
 		input.safeTransferFrom(msg.sender, address(this), _amountIn);
 
 		if (input.allowance(address(this), _targetRouter) < _amountIn)
-			input.approve(_targetRouter, approveMax ? type(uint256).max : _amountIn);
+			input.approve(_targetRouter, isApproveMax() ? type(uint256).max : _amountIn);
 
-		console.log("input: %s, output: %s", _input, _output);
-		console.log("router: %s, amountIn: %d", _targetRouter, _amountIn);
 		(bool ok, ) = address(_targetRouter).call(_callData);
-		require(ok, "router error");
+		if (!ok)
+			revert RouterError();
 
 		// received = output.balanceOf(address(this)) - balanceBefore;
 		received = output.balanceOf(msg.sender) - balanceBefore;
 
-		console.log("received: %d expected: %d", received, _minAmountOut);
-		require(received >= _minAmountOut, "router error or slippage too high");
+		if (received < _minAmountOut)
+			revert SlippageTooHigh();
 
-		if (autoRevoke) input.approve(_targetRouter, 0);
+		if (isAutoRevoke()) input.approve(_targetRouter, 0);
 		emit Swapped(msg.sender, _input, _output, _amountIn, received);
 	}
 

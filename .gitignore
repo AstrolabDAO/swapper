@@ -107,6 +107,7 @@ coverage.*
 typechain
 typechain-types
 test-results/
+test-report.*
 .hypothesis/
 reports/
 # Diagnostic reports (https://nodejs.org/api/report.html)
