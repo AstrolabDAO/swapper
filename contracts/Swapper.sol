@@ -151,8 +151,8 @@ contract Swapper is Ownable {
 		(IERC20 input, IERC20 output) = (IERC20(_input), IERC20(_output));
 
         (uint256 inputBefore, uint256 outputBefore) = (
-            input.balanceOf(address(this)),
-            output.balanceOf(address(this))
+            input.balanceOf(msg.sender),
+            output.balanceOf(msg.sender)
         );
 
 		input.safeTransferFrom(msg.sender, address(this), _amountIn);
@@ -165,7 +165,7 @@ contract Swapper is Ownable {
 			revert RouterError();
 
 		received = output.balanceOf(msg.sender) - outputBefore;
-		spent = inputBefore - input.balanceOf(address(this));
+		spent = inputBefore - input.balanceOf(msg.sender);
 
 		if (spent < 1 || received < 1)
 			revert UnexpectedOutput();
