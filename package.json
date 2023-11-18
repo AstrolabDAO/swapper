@@ -1,6 +1,6 @@
 {
   "name": "@astrolabs/swapper",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "repository": "https://github.com/AstrolabFinance/swapper",
@@ -42,7 +42,7 @@
     "@nomicfoundation/hardhat-network-helpers": "^1.0.9",
     "@nomicfoundation/hardhat-verify": "^2.0.0",
     "@nomiclabs/hardhat-etherscan": "^3.1.7",
-    "@openzeppelin/contracts": "^5.0.0",
+    "@openzeppelin/contracts": "4.9.3",
     "@tenderly/hardhat-tenderly": "^1.7.7",
     "@typechain/ethers-v6": "^0.4.0",
     "@typechain/hardhat": "^8.0.0",

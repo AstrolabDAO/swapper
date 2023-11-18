@@ -39,7 +39,7 @@ contract Swapper is Ownable {
 	error UnexpectedOutput();
 	error SlippageTooHigh();
 
-	constructor() Ownable(msg.sender) {
+	constructor() Ownable() {
 		restrictions.setBit(1); // restrictRouter
 		restrictions.setBit(4); // approveMax
 	}
