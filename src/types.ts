@@ -29,6 +29,12 @@ export interface Stringifiable {
   toString: () => string;
 }
 
+export interface customContractCalls {
+  toAddress: string;
+  callData: string;
+  gasLimit?: string;
+}
+
 export interface ISwapperParams {
   aggregatorId?: string|string[];
   input: string;
@@ -43,6 +49,7 @@ export interface ISwapperParams {
   project?: string; // == integrator
   deadline?: number;
   maxSlippage?: number;
+  customContractCalls?: customContractCalls[];
 }
 
 export interface ITransactionRequestWithEstimate extends TransactionRequest {

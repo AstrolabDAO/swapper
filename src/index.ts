@@ -19,6 +19,9 @@ export const aggregatorById: { [key: string]: Aggregator } = {
   [AggregatorId.SOCKET]: <Aggregator>Socket,
 };
 
+export const aggregatorsWithContractCalls = [AggregatorId.LIFI];
+export const aggregatorsAvailable = [AggregatorId.LIFI, AggregatorId.SQUID, AggregatorId.SOCKET];
+
 /**
  * Extracts the `callData` from the `transactionRequest` (if any).
  * @param o - The swapper parameters.
@@ -34,7 +37,7 @@ export async function getCallData(o: ISwapperParams): Promise<string> {
  * @returns A promise that resolves to the transaction request with an estimate, or `undefined` if none found.
  */
 export async function getAllTransactionRequests(o: ISwapperParams): Promise<ITransactionRequestWithEstimate[]|undefined> {
-  o.aggregatorId ??= [AggregatorId.LIFI, AggregatorId.SQUID, AggregatorId.SOCKET];
+  o.aggregatorId ??= o.customContractCalls?.length ? aggregatorsWithContractCalls : aggregatorsAvailable;
   o.project ??= "astrolab";
   o.amountWei = weiToString(o.amountWei as any);
   o.maxSlippage ||= 2_000; // NOTE: 20% in bps (pessimistic slippage for tests)
