@@ -10,6 +10,7 @@ interface IQuoteParams {
   fromChain: string;
   toToken: string;
   toChain: string;
+  toAmount?: string;
   fromAmount: number | string;
   fromAddress: string;
   toAddress?: string;
@@ -25,6 +26,9 @@ interface IQuoteParams {
   denyExchanges?: boolean[];
   preferBridges?: string[];
   preferExchanges?: boolean[];
+  toContractAddress?: string;
+  toContractCallData?: string;
+  toContractGasLimit?: string;
 }
 
 interface IStatusParams {
@@ -171,6 +175,7 @@ export const convertParams = (o: ISwapperParams): IQuoteParams => ({
   fromToken: o.input,
   fromChain: networkById[o.inputChainId],
   toToken: o.output,
+  toAmount: o.amountWei?.toString() || undefined,
   toChain: networkById[o.outputChainId ?? o.inputChainId],
   fromAmount: o.amountWei.toString(),
   fromAddress: o.testPayer ?? o.payer,
@@ -181,6 +186,9 @@ export const convertParams = (o: ISwapperParams): IQuoteParams => ({
   integrator: o.project ?? process.env.LIFI_PROJECT_ID ?? "astrolab",
   // referrer: undefined,
   allowDestinationCall: true,
+  toContractAddress: o.customContractCalls?.[0].toAddress,
+  toContractCallData: o.customContractCalls?.[0].callData,
+  toContractGasLimit: o.customContractCalls?.[0].gasLimit ?? '10000',
   // allowBridges: [],
   // allowExchanges: [],
   // denyBridges: [],
@@ -239,8 +247,8 @@ export const routerByChainId: { [id: number]: string } = {
   1313161554: "0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE",
 };
 
-export async function getTransactionRequest(o: ISwapperParams): Promise<ITransactionRequestWithEstimate|undefined> {
-  const quote = await getQuote(o);
+export async function getTransactionRequest(o: ISwapperParams): Promise<ITransactionRequestWithEstimate | undefined> {
+  const quote = o.customContractCalls?.length ? await getContractCallsQuote(o) : await getQuote(o);
   const tr = quote?.transactionRequest as ITransactionRequestWithEstimate;
   if (!tr) return;
   return addEstimatesToTransactionRequest({
@@ -252,9 +260,34 @@ export async function getTransactionRequest(o: ISwapperParams): Promise<ITransac
   });
 }
 
+// cf. https://apidocs.li.fi/reference/post_quote-contractcalls
+// Perform multiple contract calls across blockchains
+export async function getContractCallsQuote(o: ISwapperParams): Promise<IBestQuote | undefined> {
+  if (!apiKey) console.warn("missing env.LIFI_API_KEY, using public");
+  if (!validateQuoteParams(o)) throw new Error("invalid input");
+  const url = `${apiRoot}/quote/contractCall`;
+  const body = convertParams(o);
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/json',
+        ...(apiKey ? { "x-lifi-api-key": apiKey } : {})
+      },
+      body: JSON.stringify(body),
+    });
+    if (res.status >= 400)
+      throw new Error(`${res.status}: ${res.statusText} - ${await res.text?.() ?? '?'}`);
+    return await res.json();
+  } catch (e) {
+    console.error(`getContractCallsQuote failed: ${e}`);
+  }
+}
+
 // cf. https://apidocs.li.fi/reference/get_quote
 // Get a quote for your desired transfer
-export async function getQuote(o: ISwapperParams): Promise<IBestQuote|undefined> {
+export async function getQuote(o: ISwapperParams): Promise<IBestQuote | undefined> {
   if (!apiKey) console.warn("missing env.LIFI_API_KEY, using public");
   if (!validateQuoteParams(o)) throw new Error("invalid input");
   const params = convertParams(o);
