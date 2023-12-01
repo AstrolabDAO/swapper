@@ -37,7 +37,7 @@
     "README.md"
   ],
   "devDependencies": {
-    "@astrolabs/hardhat": "^1.0.58",
+    "@astrolabs/hardhat": "^1.0.81",
     "@nomicfoundation/hardhat-ethers": "^3.0.4",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.9",
     "@nomicfoundation/hardhat-verify": "^2.0.0",

@@ -1,8 +1,10 @@
 import { config, deploy, deployAll, changeNetwork } from "@astrolabs/hardhat";
 
 async function main() {
-  // await changeNetwork("fantom-tenderly");
-  await deployAll({ name: "swapper-tenderly", contract: "Swapper" });
+  await deployAll({
+    name: "Swapper",
+    contract: "Swapper",
+  });
 }
 
 main()
