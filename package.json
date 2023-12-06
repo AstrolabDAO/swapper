@@ -22,7 +22,7 @@
     "lint:fix": "yarn prettier --write && yarn eslint --fix",
     "eslint": "yarn eslint 'src/**/*.ts' 'test/**/*.ts'",
     "prettier": "yarn prettier \"**/*.{js,md,json}\"",
-    "test-unit": "yarn ts-mocha --timeout 120000 --recursive \"test/unit/**/*.ts\" --exit",
+    "test-unit": "yarn ts-mocha --require hardhat/register --timeout 120000 --recursive \"test/unit/**/*.ts\" --exit",
     "test-integration": "yarn ts-mocha --require hardhat/register --timeout 120000 --recursive \"test/integration/**/*.ts\" --exit",
     "build": "tsc --build . && cp -r contracts dist/contracts",
     "deploy-tenderly": "yarn hardhat run --network tenderly test/integration/scripts/deploy.ts",

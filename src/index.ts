@@ -6,7 +6,7 @@ import * as Squid from "./Squid";
 import * as LiFi from "./LiFi";
 import * as Socket from "./Socket";
 
-import { Aggregator, AggregatorId, ISwapperParams, ITransactionRequestWithEstimate, Stringifiable } from "./types";
+import { Aggregator, AggregatorId, ICommonStep, ISwapperParams, ITransactionRequestWithEstimate, Stringifiable } from "./types";
 
 // aggregatorId to aggregator mapping used by meta-aggregating getTransactionRequest
 export const aggregatorById: { [key: string]: Aggregator } = {
@@ -115,6 +115,7 @@ export function swapperParamsToString(o: ISwapperParams, callData?: string) {
 
 // estimate normalization from bridge/dex aggregator consisting of the transactionRequest and raw estimated transaction output
 export interface IEstimateParams {
+  steps?: ICommonStep[],
   tr: ITransactionRequestWithEstimate;
   inputAmountWei: bigint;
   outputAmountWei: bigint;
@@ -133,6 +134,7 @@ export function addEstimatesToTransactionRequest(o: IEstimateParams): ITransacti
   o.tr.estimatedOutput = Number(BigInt(o.outputAmountWei) / BigInt(10 ** roundExps[1])) / (10 ** (o.outputDecimals - roundExps[1]));
   o.tr.estimatedOutputWei = o.outputAmountWei.toString();
   o.tr.estimatedExchangeRate = o.tr.estimatedOutput / amount;
+  o.tr.steps = o.steps ?? [];
   return o.tr;
 }
 

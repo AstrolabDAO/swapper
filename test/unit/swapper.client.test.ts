@@ -1,10 +1,23 @@
 import * as dotenv from "dotenv";
+import { expect } from "chai";
+
 dotenv.config({ override: true });
 
-import { AggregatorId } from "../../src/types";
-import { expect } from "chai";
+import { AggregatorId, ISwapperParams } from "../../src/types";
 import { getTransactionRequestByAggregatorCases } from "../utils/cases";
+import { getTransactionRequest as lifiTxRequest } from "../../src/LiFi";
+import { getTransactionRequest as squidTxRequest } from "../../src/Squid";
 
+const swapperParams: ISwapperParams = {
+  // op:usdc -> arb:dai
+  inputChainId: 10,
+  input: "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
+  outputChainId: 42161,
+  output: "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+  amountWei: "1000000000",
+  payer: '0x489ee077994B6658eAfA855C308275EAd8097C4A',
+  maxSlippage: 100,
+}
 
 describe("swapper.client.test", function () {
   this.beforeAll(async function () {
@@ -39,3 +52,16 @@ describe("swapper.client.test", function () {
   })
 });
 
+describe("swapper.client.test.estimate", function () {
+
+  describe("Get Quote", function () {
+    it("Squid", async function () {
+      const tr = await squidTxRequest(swapperParams);
+      expect(tr?.data).to.be.a("string");
+    });
+    it("Li.Fi", async function () {
+      const tr = await lifiTxRequest(swapperParams);
+      expect(tr?.data).to.be.a("string");
+    });
+  })
+});
