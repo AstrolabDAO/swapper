@@ -226,15 +226,16 @@ export const routerByChainId: { [id: number]: string } = {
 export const parseSteps = (steps: IAction[]): ICommonStep[] => {
   const commonSteps: ICommonStep[] = [];
   for (const i in steps) {
+    const step = steps[i];
     commonSteps.push({
-      type: steps[i].type,
-      description: steps[i].description,
-      fromToken: steps[i].fromToken,
-      toToken: steps[i].toToken,
-      fromAmount: steps[i].fromAmount,
-      toAmount: steps[i].toAmount,
-      fromChain: parseInt(steps[i].fromChain),
-      toChain: parseInt(steps[i].toChain ?? '0'),
+      type: step.type,
+      description: step.description,
+      fromToken: step.fromToken,
+      toToken: step.toToken,
+      fromAmount: step.fromAmount,
+      toAmount: step.toAmount,
+      fromChain: parseInt(step.fromChain),
+      toChain: parseInt(step.toChain ?? '0'),
     });
   }
   return commonSteps;

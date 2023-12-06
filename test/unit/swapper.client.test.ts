@@ -57,12 +57,10 @@ describe("swapper.client.test.estimate", function () {
   describe("Get Quote", function () {
     it("Squid", async function () {
       const tr = await squidTxRequest(swapperParams);
-      console.log('TR: ', tr);
       expect(tr?.data).to.be.a("string");
     });
     it("Li.Fi", async function () {
       const tr = await lifiTxRequest(swapperParams);
-      console.log('TR: ', tr);
       expect(tr?.data).to.be.a("string");
     });
   })
