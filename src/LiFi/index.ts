@@ -1,4 +1,4 @@
-import { ITransactionRequestWithEstimate, TransactionRequest } from "../types";
+import { ITransactionRequestWithEstimate, TransactionRequest, IToolDetails, ICommonStep } from "../types";
 import qs from "qs";
 import { ISwapperParams, validateQuoteParams } from "../types";
 import { addEstimatesToTransactionRequest } from "../";
@@ -38,7 +38,7 @@ interface IStatusParams {
   toChain?: string;
 }
 
-interface IToken {
+export interface IToken {
   address: string;
   decimals: number;
   symbol: string;
@@ -115,23 +115,21 @@ interface IAction {
   fromToken: IToken;
   toToken: IToken;
   slippage?: number;
-  estimate: IEstimate;
+  fromAddress: string;
+  toAddress: string;
 }
 
-interface IStep {
+export interface IStep {
   id: string;
   type: string;
-  toolDetails: {
-    key: string; // protocol name
-    logoURI: string;
-    name: string;
-  };
+  toolDetails: IToolDetails;
   tool: string;
   action: IAction;
   data?: IData;
   integrator?: string;
   referrer?: string;
   execution?: string;
+  estimate: IEstimate;
   transactionRequest?: TransactionRequest;
 }
 
@@ -166,6 +164,7 @@ interface IQuote {
 interface IBestQuote extends IStep {
   transactionRequest: TransactionRequest;
   estimate: IEstimate;
+  includedSteps?: IStep[];
 }
 
 const apiRoot = "https://li.quest/v1";
@@ -247,11 +246,35 @@ export const routerByChainId: { [id: number]: string } = {
   1313161554: "0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE",
 };
 
+export const parseSteps = (steps: IStep[]): ICommonStep[] => {
+  const commonSteps: ICommonStep[] = [];
+  for (const i in steps) {
+    commonSteps.push({
+      id: steps[i].id,
+      type: steps[i].type,
+      description: '',
+      fromToken: steps[i].action.fromToken,
+      toToken: steps[i].action.toToken,
+      fromAmount: steps[i].action.fromAmount,
+      fromChain: steps[i].action.fromChainId,
+      toChain: steps[i].action.toChainId,
+      slippage: steps[i].action.slippage,
+      estimate: steps[i].estimate,
+      fromAddress:  steps[i].action.fromAddress,
+      toAddress:  steps[i].action.toAddress,
+      tool: steps[i].tool,
+      toolDetails: steps[i].toolDetails,
+    });
+  }
+  return commonSteps;
+}
+
 export async function getTransactionRequest(o: ISwapperParams): Promise<ITransactionRequestWithEstimate | undefined> {
   const quote = o.customContractCalls?.length ? await getContractCallsQuote(o) : await getQuote(o);
   const tr = quote?.transactionRequest as ITransactionRequestWithEstimate;
   if (!tr) return;
   return addEstimatesToTransactionRequest({
+    steps: parseSteps(quote!.includedSteps ?? []),
     tr,
     inputAmountWei: BigInt(o.amountWei as string),
     outputAmountWei: BigInt(quote!.estimate.toAmount),

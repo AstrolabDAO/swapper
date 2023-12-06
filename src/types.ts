@@ -1,3 +1,6 @@
+import { IToken as ILifiToken } from "./LiFi";
+import { IToken as ISquidToken } from "./Squid";
+
 export type TransactionRequest = {
   to?: string;
   from?: string;
@@ -59,12 +62,66 @@ export interface ITransactionRequestWithEstimate extends TransactionRequest {
   estimatedOutputWei?: Stringifiable|string|bigint;
   estimatedGas?: string|number;
   estimatedSlippage?: string|number;
+  steps?: ICommonStep[];
 }
 
 export type Aggregator = {
   routerByChainId: { [key: number]: string };
   getTransactionRequest: (o: ISwapperParams) => Promise<ITransactionRequestWithEstimate|undefined>;
 };
+interface IFeeCost {
+  name: string;
+  description?: string;
+  percentage: string;
+  token: ILifiToken|ISquidToken;
+  amount?: string;
+  amountUSD: string;
+  included: boolean;
+}
+
+interface IGasCost {
+  type: string;
+  price?: string;
+  estimate?: string;
+  limit?: string;
+  amount: string;
+  amountUSD?: string;
+  token: ILifiToken|ISquidToken;
+}
+
+interface IEstimate {
+  fromAmount: string;
+  toAmount: string;
+  toAmountMin: string;
+  approvalAddress: string;
+  feeCosts: IFeeCost[];
+  gasCosts: IGasCost[];
+}
+
+export interface IToolDetails {
+  key: string; // protocol name
+  logoURI: string;
+  name: string;
+}
+
+
+export interface ICommonStep {
+  id?: string,
+  type: string,
+  description?: string,
+  fromToken?: ILifiToken|ISquidToken,
+  toToken?: ILifiToken|ISquidToken,
+  fromAmount?: string,
+  toAmount?: string,
+  fromChain?: number,
+  toChain?: number,
+  fromAddress?: string,
+  toAddress?: string,
+  tool?: string,
+  toolDetails?: IToolDetails,
+  estimate?: IEstimate,
+  slippage?: number,
+}
 
 const isAddress = (s: string): boolean => /^0x[a-fA-F0-9]{40}$/i.test(s);
 
