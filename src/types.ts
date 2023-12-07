@@ -53,6 +53,8 @@ export interface ISwapperParams {
   deadline?: number;
   maxSlippage?: number;
   customContractCalls?: customContractCalls[];
+  denyBridges?: string[];
+  denyExchanges?: string[];
 }
 
 export interface ITransactionRequestWithEstimate extends TransactionRequest {

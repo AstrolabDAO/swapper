@@ -23,12 +23,16 @@ interface IQuoteParams {
   allowBridges?: string[];
   allowExchanges?: boolean[];
   denyBridges?: string[];
-  denyExchanges?: boolean[];
+  denyExchanges?: string[];
   preferBridges?: string[];
   preferExchanges?: boolean[];
-  toContractAddress?: string;
-  toContractCallData?: string;
-  toContractGasLimit?: string;
+  contractCalls?: [{
+    fromAmount: string;
+    fromTokenAddress?: string;
+    toContractAddress?: string;
+    toContractCallData?: string;
+    toContractGasLimit?: string;
+  }];
 }
 
 interface IStatusParams {
@@ -185,13 +189,17 @@ export const convertParams = (o: ISwapperParams): IQuoteParams => ({
   integrator: o.project ?? process.env.LIFI_PROJECT_ID ?? "astrolab",
   // referrer: undefined,
   allowDestinationCall: true,
-  toContractAddress: o.customContractCalls?.[0].toAddress,
-  toContractCallData: o.customContractCalls?.[0].callData,
-  toContractGasLimit: o.customContractCalls?.[0].gasLimit ?? '10000',
+  contractCalls: [{
+    fromAmount: o.amountWei.toString(),
+    fromTokenAddress: o.output,
+    toContractAddress: o.customContractCalls?.[0].toAddress,
+    toContractCallData: o.customContractCalls?.[0].callData,
+    toContractGasLimit: o.customContractCalls?.[0].gasLimit ?? '10000',
+  }],
   // allowBridges: [],
   // allowExchanges: [],
-  // denyBridges: [],
-  // denyExchanges: [],
+  denyBridges: o.denyBridges ?? [],
+  denyExchanges: o.denyExchanges ?? [],
   // preferBridges: ["cctp", "hop", "across"],
   // preferExchanges: [],
 });
@@ -289,7 +297,7 @@ export async function getTransactionRequest(o: ISwapperParams): Promise<ITransac
 export async function getContractCallsQuote(o: ISwapperParams): Promise<IBestQuote | undefined> {
   if (!apiKey) console.warn("missing env.LIFI_API_KEY, using public");
   if (!validateQuoteParams(o)) throw new Error("invalid input");
-  const url = `${apiRoot}/quote/contractCall`;
+  const url = `${apiRoot}/quote/contractCalls`;
   const body = convertParams(o);
   try {
     const res = await fetch(url, {
