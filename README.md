@@ -27,6 +27,7 @@ Don't hesitate to reach out or submit pull requests with missing aggregators ada
 - [Li.Fi](https://li.fi/) `stable` `tested`
 - [Squid Router](https://www.squidrouter.com/) `stable` `tested`
 - [Socket](https://socket.tech/) `stable` `tested`
+- [Sifi](https://sifi.org/) `untested`
 
 ### Liquidity
 - [1inch](https://1inch.io/) `stable` `tested`
@@ -101,6 +102,7 @@ async function getTransactionRequests(): TransactionRequest[] {
 - [0x](https://github.com/AstrolabFinance/swapper/blob/main/src/ZeroX/index.ts)
 - [KyberSwap](https://github.com/AstrolabFinance/swapper/blob/main/src/KyberSwap/index.ts)
 - [ParaSwap](https://github.com/AstrolabFinance/swapper/blob/main/src/ParaSwap/index.ts)
+- [Sifi](https://github.com/AstrolabFinance/swapper/blob/main/src/Sifi/index.ts)
 
 ### Swapper Contract
 
