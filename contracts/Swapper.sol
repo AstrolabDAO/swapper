@@ -243,8 +243,11 @@ contract Swapper is Ownable {
         spent = inputBefore - input.balanceOf(msg.sender);
 
         if (spent < 1 || received < 1) revert UnexpectedOutput();
-
         if (received < _minAmountOut) revert SlippageTooHigh();
+
+        // return leftover input tokens to msg.sender
+        if (spent < _amountIn)
+            input.safeTransfer(msg.sender, _amountIn - spent);
 
         if (isAutoRevoke()) input.approve(_targetRouter, 0);
         emit Swapped(msg.sender, _input, _output, _amountIn, received);

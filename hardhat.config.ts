@@ -6,13 +6,14 @@ import { config } from "@astrolabs/hardhat/dist/hardhat.config";
 
 config.solidity!.compilers = [
   {
-    version: "0.8.19",
+    version: "0.8.22",
     settings: {
       optimizer: {
         enabled: true,
-        runs: 400,
+        runs: 1000,
       },
       viaIR: false,
+      evmVersion: `paris`
     },
   },
 ];
