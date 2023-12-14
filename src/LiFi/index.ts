@@ -1,9 +1,16 @@
-import { ITransactionRequestWithEstimate, TransactionRequest, IToolDetails, ICommonStep } from "../types";
+import { ITransactionRequestWithEstimate, TransactionRequest, IToolDetails, ICommonStep, ICustomContractCall } from "../types";
 import qs from "qs";
 import { ISwapperParams, validateQuoteParams } from "../types";
 import { addEstimatesToTransactionRequest } from "../";
 
 // LiFi specific types
+export interface ILifiContractCall {
+  fromAmount?: string;
+  fromTokenAddress?: string;
+  toContractAddress?: string;
+  toContractCallData?: string;
+  toContractGasLimit?: string;
+};
 
 interface IQuoteParams {
   fromToken: string;
@@ -26,13 +33,7 @@ interface IQuoteParams {
   denyExchanges?: string[];
   preferBridges?: string[];
   preferExchanges?: boolean[];
-  contractCalls?: [{
-    fromAmount: string;
-    fromTokenAddress?: string;
-    toContractAddress?: string;
-    toContractCallData?: string;
-    toContractGasLimit?: string;
-  }];
+  contractCalls?: ILifiContractCall[];
 }
 
 interface IStatusParams {
