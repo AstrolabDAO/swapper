@@ -93,12 +93,12 @@ interface IGasCost {
 }
 
 interface IEstimate {
-  fromAmount: string;
-  toAmount: string;
-  toAmountMin: string;
-  approvalAddress: string;
-  feeCosts: IFeeCost[];
-  gasCosts: IGasCost[];
+  fromAmount?: string;
+  toAmount?: string;
+  toAmountMin?: string;
+  approvalAddress?: string;
+  feeCosts?: IFeeCost[];
+  gasCosts?: IGasCost[];
 }
 
 export interface IToolDetails {
