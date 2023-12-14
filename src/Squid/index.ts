@@ -1,26 +1,57 @@
 import qs from "qs";
 import { addEstimatesToTransactionRequest } from "../";
-import { ICommonStep, ISwapperParams, ITransactionRequestWithEstimate, TransactionRequest, validateQuoteParams } from "../types";
+import { ICommonStep, ICustomContractCall, ISwapperParams, ITransactionRequestWithEstimate, TransactionRequest, validateQuoteParams } from "../types";
 
 // Squid specific types
 interface IQuoteParams {
   enableBoost: boolean;
-  toChain: string|number;
+  toChain: string | number;
   toToken: string;
-  fromChain: string|number;
+  fromChain: string | number;
   fromToken: string;
   fromAddress: string;
-  fromAmount: number|string;
-  slippage: number|string;
+  fromAmount: number | string;
+  slippage: number | string;
   slippageConfig?: {
     autoMode: number;
   };
   toAddress: string;
   quoteOnly?: boolean;
-  customContractCalls?: object[];
+  customContractCalls?: ICustomContractCall[];
+  postHook?: IPostHook;
   prefer?: string[];
   receiveGasOnDestination?: boolean;
   integrator?: string;
+}
+
+export enum SquidCallType {
+  DEFAULT = 0,
+  FULL_TOKEN_BALANCE = 1,
+  FULL_NATIVE_BALANCE = 2,
+  COLLECT_TOKEN_BALANCE = 3, // unused in hooks
+}
+
+export enum ChainType {
+  EVM = "evm",
+  Cosmos = "cosmos"
+}
+
+interface IPostHook {
+  chainType: ChainType;
+  calls: ISquidCustomCall[];
+}
+
+export interface ISquidCustomCall {
+  chainType: ChainType;
+  callType: SquidCallType;
+  target: string;
+  value: string;
+  callData: string;
+  payload: {
+    tokenAddress: string,
+    inputPos: number,
+  },
+  estimatedGas: string;
 }
 
 interface IStatusParams {
@@ -142,6 +173,22 @@ interface IRoute {
 const apiRoot = "https://v2.api.squidrouter.com/v2";
 const apiKey = process.env?.SQUID_API_KEY;
 
+const generateHook = (contractCall: ICustomContractCall, outputToken: string)
+  : ISquidCustomCall => {
+  return {
+    chainType: ChainType.EVM,
+    callType: SquidCallType.FULL_TOKEN_BALANCE,
+    target: outputToken,
+    value: "0",
+    callData: contractCall.callData,
+    payload: {
+      tokenAddress: outputToken,
+      inputPos: 1,
+    },
+    estimatedGas: contractCall.gasLimit ?? "20000"
+  }
+}
+
 export const convertParams = (o: ISwapperParams): IQuoteParams => ({
   enableBoost: true,
   fromToken: o.input,
@@ -158,6 +205,11 @@ export const convertParams = (o: ISwapperParams): IQuoteParams => ({
   quoteOnly: false, // false == no transaction request
   receiveGasOnDestination: false,
   integrator: process.env?.SQUID_PROJECT_ID ?? "astrolab-api",
+  postHook: o.customContractCalls?.length ?
+    {
+      chainType: ChainType.EVM,
+      calls: [generateHook(o.customContractCalls[0], o.output)]
+    } : undefined,
 });
 
 export const routerByChainId: { [id: number]: string } = {
@@ -241,9 +293,9 @@ export const parseSteps = (steps: IAction[]): ICommonStep[] => {
   return commonSteps;
 }
 
-export async function getTransactionRequest(o: ISwapperParams): Promise<ITransactionRequestWithEstimate|undefined> {
+export async function getTransactionRequest(o: ISwapperParams): Promise<ITransactionRequestWithEstimate | undefined> {
   const quote = await getQuote(o) as IQuoteResponse;
-  const tr = quote?.route.transactionRequest as (ITransactionRequest&ITransactionRequestWithEstimate);
+  const tr = quote?.route.transactionRequest as (ITransactionRequest & ITransactionRequestWithEstimate);
   if (!tr) return;
   tr.to ??= tr.target ?? tr.targetAddress;
   return addEstimatesToTransactionRequest({

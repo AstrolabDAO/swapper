@@ -32,8 +32,8 @@ export interface Stringifiable {
   toString: () => string;
 }
 
-export interface customContractCalls {
-  toAddress: string;
+export interface ICustomContractCall {
+  toAddress?: string;
   callData: string;
   gasLimit?: string;
 }
@@ -52,7 +52,7 @@ export interface ISwapperParams {
   project?: string; // == integrator
   deadline?: number;
   maxSlippage?: number;
-  customContractCalls?: customContractCalls[];
+  customContractCalls?: ICustomContractCall[];
   denyBridges?: string[];
   denyExchanges?: string[];
 }
@@ -71,6 +71,7 @@ export type Aggregator = {
   routerByChainId: { [key: number]: string };
   getTransactionRequest: (o: ISwapperParams) => Promise<ITransactionRequestWithEstimate|undefined>;
 };
+
 interface IFeeCost {
   name: string;
   description?: string;
