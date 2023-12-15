@@ -77,7 +77,6 @@
   },
   "peerDependencies": {},
   "dependencies": {
-    "@astrolabs/registry": "^1.0.1",
     "@types/qs": "^6.9.9",
     "dotenv": "^16.3.1",
     "qs": "^6.11.2"
