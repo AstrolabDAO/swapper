@@ -26,6 +26,9 @@
     "test-integration": "yarn ts-mocha --require hardhat/register --timeout 120000 --recursive \"test/integration/**/*.ts\" --exit",
     "build": "tsc --build . && cp -r contracts dist/contracts",
     "deploy-tenderly": "yarn hardhat run --network tenderly test/integration/scripts/deploy.ts",
+    "deploy-gnosis": "yarn hardhat run --network gnosis-mainnet test/integration/scripts/deploy.ts",
+    "deploy-optimism": "yarn hardhat run --network optimism-mainnet test/integration/scripts/deploy.ts",
+    "deploy-polygon": "yarn hardhat run --network polygon-mainnet test/integration/scripts/deploy.ts",
     "test-tenderly": "yarn hardhat test --network tenderly test/integration/swapper.contract.test.ts --grep 'Fuzzy monochain'",
     "prepublishOnly": "yarn build",
     "clean": "yarn rimraf dist internal types *.{d.ts,js}{,.map} build-test tsconfig.tsbuildinfo"
