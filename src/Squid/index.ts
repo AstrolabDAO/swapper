@@ -205,10 +205,10 @@ export const convertParams = (o: ISwapperParams): IQuoteParams => ({
   quoteOnly: false, // false == no transaction request
   receiveGasOnDestination: false,
   integrator: process.env?.SQUID_PROJECT_ID ?? "astrolab-api",
-  postHook: o.customContractCalls?.length ?
+  postHook: o.postHook?.length ?
     {
       chainType: ChainType.EVM,
-      calls: [generateHook(o.customContractCalls[0], o.output)]
+      calls: [generateHook(o.postHook[0], o.output)]
     } : undefined,
 });
 
