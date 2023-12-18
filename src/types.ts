@@ -53,6 +53,7 @@ export interface ISwapperParams {
   deadline?: number;
   maxSlippage?: number;
   customContractCalls?: ICustomContractCall[];
+  postHook?: ICustomContractCall[];
   denyBridges?: string[];
   denyExchanges?: string[];
 }
