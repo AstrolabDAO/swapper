@@ -178,7 +178,7 @@ const generateHook = (contractCall: ICustomContractCall, outputToken: string)
   return {
     chainType: ChainType.EVM,
     callType: SquidCallType.FULL_TOKEN_BALANCE,
-    target: outputToken,
+    target: contractCall.toAddress!,
     value: "0",
     callData: contractCall.callData,
     payload: {
