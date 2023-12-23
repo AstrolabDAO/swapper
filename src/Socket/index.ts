@@ -236,7 +236,7 @@ export async function getTransactionRequest(o: ISwapperParams): Promise<ITransac
       outputDecimals: Number(quote!.toAsset.decimals),
     });
   } catch (e) {
-    console.error(`getTransactionRequest failed: ${e}`);
+    throw new Error(`getTransactionRequest failed: ${e}`);
   }
 }
 
@@ -254,7 +254,7 @@ export async function getQuote(o: ISwapperParams): Promise<IQuote|undefined> {
       throw new Error(`${res.status}: ${res.statusText}`);
     return (await res.json())?.result;
   } catch (e) {
-    console.error(`getQuote failed: ${e}`);
+    throw new Error(`getQuote failed: ${e}`);
   }
 }
 
@@ -270,6 +270,6 @@ export async function getStatus(o: IStatusParams): Promise<IStatusData|undefined
       throw new Error(`${res.status}: ${res.statusText}`);
     return (await res.json()).result;
   } catch (e) {
-    console.error(`getStatus failed: ${e}`);
+    throw new Error(`getStatus failed: ${e}`);
   }
 }

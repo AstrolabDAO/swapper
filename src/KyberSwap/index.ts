@@ -181,7 +181,7 @@ export async function getTransactionRequest(o: ISwapperParams): Promise<ITransac
       gasLimit: resBody.data.gas * 2
     };
   } catch (e) {
-    console.error(`getTransactionRequest failed: ${e}`);
+    throw new Error(`getTransactionRequest failed: ${e}`);
   }
 }
 
@@ -198,6 +198,6 @@ export async function getQuote(o: ISwapperParams): Promise<IQuoteData|undefined>
       throw new Error(`${res.status}: ${res.statusText} - ${await res.text?.()}`);
     return await res.json();
   } catch (e) {
-    console.error(`getQuote failed: ${e}`);
+    throw new Error(`getQuote failed: ${e}`);
   }
 }

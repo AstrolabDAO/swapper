@@ -314,7 +314,7 @@ export async function getContractCallsQuote(o: ISwapperParams): Promise<IBestQuo
       throw new Error(`${res.status}: ${res.statusText} - ${await res.text?.() ?? '?'}`);
     return await res.json();
   } catch (e) {
-    console.error(`getContractCallsQuote failed: ${e}`);
+    throw new Error(`getContractCallsQuote failed: ${e}`);
   }
 }
 
@@ -333,7 +333,7 @@ export async function getQuote(o: ISwapperParams): Promise<IBestQuote | undefine
       throw new Error(`${res.status}: ${res.statusText} - ${await res.text?.() ?? '?'}`);
     return await res.json();
   } catch (e) {
-    console.error(`getQuote failed: ${e}`);
+    throw new Error(`getQuote failed: ${e}`);
   }
 }
 
@@ -348,6 +348,6 @@ export async function getStatus(o: IStatusParams) {
       throw new Error(`${res.status}: ${res.statusText}`);
     return await res.json();
   } catch (e) {
-    console.error(`getStatus failed: ${e}`);
+    throw new Error(`getStatus failed: ${e}`);
   }
 }
