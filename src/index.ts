@@ -65,8 +65,7 @@ export async function getAllTransactionRequests(o: ISwapperParams): Promise<ITra
   }))).filter(tr => !!tr) as ITransactionRequestWithEstimate[];
 
   if (trs.length == 0) {
-    console.error(`No viable route found for ${swapperParamsToString(o)}`);
-    return;
+    throw new Error(`No viable route found for ${swapperParamsToString(o)}`);
   }
 
   // find best exchange rate
