@@ -190,13 +190,13 @@ export const convertParams = (o: ISwapperParams): IQuoteParams => ({
   integrator: o.project ?? process.env.LIFI_PROJECT_ID ?? "astrolab",
   // referrer: undefined,
   allowDestinationCall: true,
-  contractCalls: [{
+  contractCalls: o.customContractCalls?.length ? [{
     fromAmount: o.amountWei.toString(),
     fromTokenAddress: o.output,
     toContractAddress: o.customContractCalls?.[0].toAddress,
     toContractCallData: o.customContractCalls?.[0].callData,
     toContractGasLimit: o.customContractCalls?.[0].gasLimit ?? '10000',
-  }],
+  }] : undefined,
   // allowBridges: [],
   // allowExchanges: [],
   denyBridges: o.denyBridges ?? [],
@@ -324,6 +324,7 @@ export async function getQuote(o: ISwapperParams): Promise<IBestQuote | undefine
   if (!apiKey) console.warn("missing env.LIFI_API_KEY, using public");
   if (!validateQuoteParams(o)) throw new Error("invalid input");
   const params = convertParams(o);
+  console.log('params: ', params)
   const url = `${apiRoot}/quote?${qs.stringify(params)}`;
   try {
     const res = await fetch(url, {
