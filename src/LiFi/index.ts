@@ -324,7 +324,6 @@ export async function getQuote(o: ISwapperParams): Promise<IBestQuote | undefine
   if (!apiKey) console.warn("missing env.LIFI_API_KEY, using public");
   if (!validateQuoteParams(o)) throw new Error("invalid input");
   const params = convertParams(o);
-  console.log('params: ', params)
   const url = `${apiRoot}/quote?${qs.stringify(params)}`;
   try {
     const res = await fetch(url, {
