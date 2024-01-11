@@ -190,13 +190,13 @@ export const convertParams = (o: ISwapperParams): IQuoteParams => ({
   integrator: o.project ?? process.env.LIFI_PROJECT_ID ?? "astrolab",
   // referrer: undefined,
   allowDestinationCall: true,
-  contractCalls: [{
+  contractCalls: o.customContractCalls?.length ? [{
     fromAmount: o.amountWei.toString(),
     fromTokenAddress: o.output,
     toContractAddress: o.customContractCalls?.[0].toAddress,
     toContractCallData: o.customContractCalls?.[0].callData,
     toContractGasLimit: o.customContractCalls?.[0].gasLimit ?? '10000',
-  }],
+  }] : undefined,
   // allowBridges: [],
   // allowExchanges: [],
   denyBridges: o.denyBridges ?? [],
