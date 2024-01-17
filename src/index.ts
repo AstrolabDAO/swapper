@@ -5,6 +5,7 @@ import * as KyberSwap from "./KyberSwap";
 import * as Squid from "./Squid";
 import * as LiFi from "./LiFi";
 import * as Socket from "./Socket";
+import * as Sifi from "./Sifi";
 
 import { Aggregator, AggregatorId, ICommonStep, ISwapperParams, ITransactionRequestWithEstimate, Stringifiable } from "./types";
 
@@ -17,6 +18,7 @@ export const aggregatorById: { [key: string]: Aggregator } = {
   [AggregatorId.SQUID]: <Aggregator>Squid,
   [AggregatorId.LIFI]: <Aggregator>LiFi,
   [AggregatorId.SOCKET]: <Aggregator>Socket,
+  [AggregatorId.SIFI]: <Aggregator>Sifi,
 };
 
 export const aggregatorsWithContractCalls = [AggregatorId.LIFI];
@@ -146,5 +148,6 @@ export {
   KyberSwap,
   Squid,
   LiFi,
-  Socket
+  Socket,
+  Sifi
 }

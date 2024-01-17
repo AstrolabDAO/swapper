@@ -49,6 +49,10 @@ describe("swapper.client.test", function () {
       for (const tr of (await getTransactionRequestByAggregatorCases(AggregatorId.ZERO_X)))
         expect(tr?.data).to.be.a("string");
     });
+    it("Sifi", async function () {
+      for (const tr of (await getTransactionRequestByAggregatorCases(AggregatorId.SIFI)))
+        expect(tr?.data).to.be.a("string");
+    });
   })
 });
 

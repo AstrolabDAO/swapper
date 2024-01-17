@@ -26,6 +26,7 @@ export enum AggregatorId {
   ONE_INCH = "ONE_INCH",
   ZERO_X = "ZERO_X",
   PARASWAP = "PARASWAP",
+  SIFI = "SIFI",
 }
 
 export interface Stringifiable {
