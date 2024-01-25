@@ -121,6 +121,7 @@ export interface IEstimateParams {
   outputAmountWei: bigint;
   inputDecimals: number;
   outputDecimals: number;
+  approvalAddress: string;
 }
 
 /**
@@ -135,6 +136,7 @@ export function addEstimatesToTransactionRequest(o: IEstimateParams): ITransacti
   o.tr.estimatedOutputWei = o.outputAmountWei.toString();
   o.tr.estimatedExchangeRate = o.tr.estimatedOutput / amount;
   o.tr.steps = o.steps ?? [];
+  o.tr.approvalAddress = o.approvalAddress;
   return o.tr;
 }
 

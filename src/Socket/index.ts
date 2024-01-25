@@ -234,6 +234,7 @@ export async function getTransactionRequest(o: ISwapperParams): Promise<ITransac
       outputAmountWei: BigInt(quote!.routes[0].toAmount),
       inputDecimals: Number(quote!.fromAsset.decimals),
       outputDecimals: Number(quote!.toAsset.decimals),
+      approvalAddress: swapData.txTarget
     });
   } catch (e) {
     console.error(`getTransactionRequest failed: ${e}`);
