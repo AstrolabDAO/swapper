@@ -290,6 +290,7 @@ export async function getTransactionRequest(o: ISwapperParams): Promise<ITransac
     outputAmountWei: BigInt(quote!.estimate.toAmount),
     inputDecimals: quote!.action.fromToken.decimals,
     outputDecimals: quote!.action.toToken.decimals,
+    approvalAddress: quote!.estimate.approvalAddress ?? '',
   });
 }
 
