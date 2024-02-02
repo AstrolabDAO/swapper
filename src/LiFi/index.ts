@@ -2,6 +2,7 @@ import { ITransactionRequestWithEstimate, TransactionRequest, IToolDetails, ICom
 import qs from "qs";
 import { ISwapperParams, validateQuoteParams } from "../types";
 import { addEstimatesToTransactionRequest } from "../";
+import { IToken as ICommonToken, IEstimate as ICommonEstimate } from "../types";
 
 // LiFi specific types
 export interface ILifiContractCall {
@@ -255,6 +256,35 @@ export const routerByChainId: { [id: number]: string } = {
   1313161554: "0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE",
 };
 
+export const parseToken = (token: IToken): ICommonToken => {
+  return {
+    address: token.address,
+    decimals: token.decimals,
+    symbol: token.symbol,
+    chainId: token.chainId?.toString(),
+    name: token.name,
+    logoURI: token.logoURI,
+    priceUSD: token.priceUSD,
+  };
+};
+
+export const parseEstimate = (estimate: IEstimate): ICommonEstimate => {
+  return {
+    fromAmount: estimate.fromAmount,
+    toAmount: estimate.toAmount,
+    toAmountMin: estimate.toAmountMin,
+    approvalAddress: estimate.approvalAddress,
+    feeCosts: estimate.feeCosts.map((feeCost) => ({
+      ...feeCost,
+      token: parseToken(feeCost.token),
+    })),
+    gasCosts: estimate.gasCosts.map((gasCost) => ({
+      ...gasCost,
+      token: parseToken(gasCost.token),
+    })),
+  };
+};
+
 export const parseSteps = (steps: IStep[]): ICommonStep[] => {
   const commonSteps: ICommonStep[] = [];
   for (const i in steps) {
@@ -263,15 +293,15 @@ export const parseSteps = (steps: IStep[]): ICommonStep[] => {
       id: step.id,
       type: step.type,
       description: '',
-      fromToken: step.action.fromToken,
-      toToken: step.action.toToken,
+      fromToken: parseToken(step.action.fromToken),
+      toToken: parseToken(step.action.toToken),
       fromAmount: step.action.fromAmount,
       fromChain: step.action.fromChainId,
       toChain: step.action.toChainId,
       slippage: step.action.slippage,
-      estimate: step.estimate,
-      fromAddress:  step.action.fromAddress,
-      toAddress:  step.action.toAddress,
+      estimate: parseEstimate(step.estimate),
+      fromAddress: step.action.fromAddress,
+      toAddress: step.action.toAddress,
       tool: step.tool,
       toolDetails: step.toolDetails,
     });
