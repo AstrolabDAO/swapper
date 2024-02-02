@@ -1,6 +1,7 @@
 import qs from "qs";
 import { addEstimatesToTransactionRequest } from "../";
 import { ICommonStep, ICustomContractCall, ISwapperParams, ITransactionRequestWithEstimate, TransactionRequest, validateQuoteParams } from "../types";
+import { IToken as ICommonToken } from "../types";
 
 // Squid specific types
 interface IQuoteParams {
@@ -282,8 +283,8 @@ export const parseSteps = (steps: IAction[]): ICommonStep[] => {
     commonSteps.push({
       type: step.type,
       description: step.description,
-      fromToken: step.fromToken,
-      toToken: step.toToken,
+      fromToken: parseToken(step.fromToken),
+      toToken: parseToken(step.toToken),
       fromAmount: step.fromAmount,
       toAmount: step.toAmount,
       fromChain: parseInt(step.fromChain),
@@ -293,7 +294,21 @@ export const parseSteps = (steps: IAction[]): ICommonStep[] => {
   return commonSteps;
 }
 
-export async function getTransactionRequest(o: ISwapperParams): Promise<ITransactionRequestWithEstimate | undefined> {
+export const parseToken = (token: IToken): ICommonToken => {
+  return {
+    address: token.address,
+    decimals: token.decimals,
+    symbol: token.symbol,
+    chainId: token.chainId,
+    name: token.name,
+    logoURI: token.logoURI,
+    priceUSD: token.usdPrice?.toString(),
+  };
+};
+
+
+export async function getTransactionRequest(o: ISwapperParams)
+  : Promise<ITransactionRequestWithEstimate | undefined> {
   const quote = await getQuote(o) as IQuoteResponse;
   const tr = quote?.route.transactionRequest as (ITransactionRequest & ITransactionRequestWithEstimate);
   if (!tr) return;

@@ -1,5 +1,13 @@
-import { IToken as ILifiToken } from "./LiFi";
-import { IToken as ISquidToken } from "./Squid";
+
+export interface IToken {
+  chainId: string;
+  address?: string;
+  name: string;
+  symbol: string;
+  decimals: number;
+  logoURI?: string;
+  priceUSD?: string;
+}
 
 export type TransactionRequest = {
   to?: string;
@@ -78,7 +86,7 @@ interface IFeeCost {
   name: string;
   description?: string;
   percentage: string;
-  token: ILifiToken|ISquidToken;
+  token: IToken;
   amount?: string;
   amountUSD: string;
   included: boolean;
@@ -91,10 +99,10 @@ interface IGasCost {
   limit?: string;
   amount: string;
   amountUSD?: string;
-  token: ILifiToken|ISquidToken;
+  token: IToken;
 }
 
-interface IEstimate {
+export interface IEstimate {
   fromAmount?: string;
   toAmount?: string;
   toAmountMin?: string;
@@ -114,8 +122,8 @@ export interface ICommonStep {
   id?: string,
   type: string,
   description?: string,
-  fromToken?: ILifiToken|ISquidToken,
-  toToken?: ILifiToken|ISquidToken,
+  fromToken?: IToken,
+  toToken?: IToken,
   fromAmount?: string,
   toAmount?: string,
   fromChain?: number,
