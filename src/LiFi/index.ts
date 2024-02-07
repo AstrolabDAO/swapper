@@ -44,6 +44,12 @@ interface IStatusParams {
   toChain?: string;
 }
 
+interface IGasSuggestionParams {
+  fromToken?: string;
+  fromChain?: string;
+  toChain?: string;
+}
+
 export interface IToken {
   address: string;
   decimals: number;
@@ -396,5 +402,17 @@ export async function getStatus(o: IStatusParams) {
     return await res.json();
   } catch (e) {
     console.error(`getStatus failed: ${e}`);
+  }
+}
+
+export async function gasSuggestion(o: IGasSuggestionParams) {
+  if (!apiKey) console.warn("missing env.LIFI_API_KEY");
+  try {
+    const res = await fetch(`${apiRoot}/gas/suggestion/${o.toChain}?${qs.stringify(o)}`);
+    if (res.status >= 400)
+      throw new Error(`${res.status}: ${res.statusText}`);
+    return await res.json();
+  } catch (e) {
+    console.error(`estimateGas failed: ${e}`);
   }
 }
