@@ -122,6 +122,8 @@ export interface IEstimateParams {
   inputDecimals: number;
   outputDecimals: number;
   approvalAddress: string;
+  totalGasUsd: number;
+  totalGasWei: bigint;
 }
 
 /**
@@ -137,6 +139,8 @@ export function addEstimatesToTransactionRequest(o: IEstimateParams): ITransacti
   o.tr.estimatedExchangeRate = o.tr.estimatedOutput / amount;
   o.tr.steps = o.steps ?? [];
   o.tr.approvalAddress = o.approvalAddress;
+  o.tr.totalGasUsd = o.totalGasUsd;
+  o.tr.totalGasWei = o.totalGasWei;
   return o.tr;
 }
 

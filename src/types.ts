@@ -61,9 +61,9 @@ export interface ISwapperParams {
   deadline?: number;
   maxSlippage?: number;
   customContractCalls?: ICustomContractCall[];
-  postHook?: ICustomContractCall[];
   denyBridges?: string[];
   denyExchanges?: string[];
+  receiveGasOnDestination?: boolean;
 }
 
 export interface ITransactionRequestWithEstimate extends TransactionRequest {
@@ -75,6 +75,8 @@ export interface ITransactionRequestWithEstimate extends TransactionRequest {
   estimatedSlippage?: string|number;
   steps?: ICommonStep[];
   approvalAddress?: string;
+  totalGasUsd: number;
+  totalGasWei: bigint;
 }
 
 export type Aggregator = {
@@ -130,7 +132,7 @@ export interface ICommonStep {
   toChain?: number,
   fromAddress?: string,
   toAddress?: string,
-  tool?: string,
+  tool: string,
   toolDetails?: IToolDetails,
   estimate?: IEstimate,
   slippage?: number,
