@@ -274,22 +274,34 @@ export const parseEstimate = (estimate: IEstimate): ICommonEstimate => {
     toAmount: estimate.toAmount,
     toAmountMin: estimate.toAmountMin,
     approvalAddress: estimate.approvalAddress,
-    feeCosts: estimate.feeCosts.map((feeCost) => ({
+    feeCosts: estimate.feeCosts?.map((feeCost) => ({
       ...feeCost,
       token: parseToken(feeCost.token),
     })),
-    gasCosts: estimate.gasCosts.map((gasCost) => ({
+    gasCosts: estimate.gasCosts?.map((gasCost) => ({
       ...gasCost,
       token: parseToken(gasCost.token),
     })),
   };
 };
 
-export const parseSteps = (steps: IStep[]): ICommonStep[] => {
-  const commonSteps: ICommonStep[] = [];
-  for (const i in steps) {
-    const step = steps[i];
-    commonSteps.push({
+export const parseSteps = (steps: IStep[]): [ICommonStep[], number, bigint] => {
+  let totalGasUsd = 0;
+  let totalGasWei = BigInt(0);
+
+  const commonSteps = steps.map((step) => {
+    const estimate = parseEstimate(step.estimate);
+
+    estimate?.gasCosts?.forEach(gasCost => {
+      totalGasUsd += parseFloat(gasCost?.amountUSD ?? '0');
+      totalGasWei += BigInt(gasCost.amount);
+    });
+    estimate?.feeCosts?.forEach(feeCosts => {
+      totalGasUsd += parseFloat(feeCosts?.amountUSD ?? '0');
+      totalGasWei += BigInt(feeCosts.amount ?? '0');
+    });
+
+    return {
       id: step.id,
       type: step.type,
       description: '',
@@ -299,28 +311,32 @@ export const parseSteps = (steps: IStep[]): ICommonStep[] => {
       fromChain: step.action.fromChainId,
       toChain: step.action.toChainId,
       slippage: step.action.slippage,
-      estimate: parseEstimate(step.estimate),
+      estimate,
       fromAddress: step.action.fromAddress,
       toAddress: step.action.toAddress,
       tool: step.tool,
       toolDetails: step.toolDetails,
-    });
-  }
-  return commonSteps;
+    };
+  });
+
+  return [commonSteps, totalGasUsd, totalGasWei];
 }
 
 export async function getTransactionRequest(o: ISwapperParams): Promise<ITransactionRequestWithEstimate | undefined> {
   const quote = o.customContractCalls?.length ? await getContractCallsQuote(o) : await getQuote(o);
   const tr = quote?.transactionRequest as ITransactionRequestWithEstimate;
   if (!tr) return;
+  const [steps, totalGasUsd, totalGasWei] = parseSteps(quote!.includedSteps ?? []);
   return addEstimatesToTransactionRequest({
-    steps: parseSteps(quote!.includedSteps ?? []),
+    steps,
     tr,
     inputAmountWei: BigInt(o.amountWei as string),
     outputAmountWei: BigInt(quote!.estimate.toAmount),
     inputDecimals: quote!.action.fromToken.decimals,
     outputDecimals: quote!.action.toToken.decimals,
     approvalAddress: quote!.estimate.approvalAddress ?? '',
+    totalGasUsd,
+    totalGasWei
   });
 }
 

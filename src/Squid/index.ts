@@ -186,6 +186,7 @@ const generateHook = (contractCall: ICustomContractCall, outputToken: string)
       tokenAddress: outputToken,
       inputPos: 1,
     },
+    // todo: verify if enough gas here to pay LZ
     estimatedGas: contractCall.gasLimit ?? "20000"
   }
 }
@@ -204,12 +205,12 @@ export const convertParams = (o: ISwapperParams): IQuoteParams => ({
     autoMode: 1,
   },
   quoteOnly: false, // false == no transaction request
-  receiveGasOnDestination: false,
+  receiveGasOnDestination: o.receiveGasOnDestination ?? false,
   integrator: process.env?.SQUID_PROJECT_ID ?? "astrolab-api",
-  postHook: o.postHook?.length ?
+  postHook: o.customContractCalls?.length ?
     {
       chainType: ChainType.EVM,
-      calls: [generateHook(o.postHook[0], o.output)]
+      calls: [generateHook(o.customContractCalls[0], o.output)]
     } : undefined,
 });
 
@@ -278,8 +279,7 @@ export const routerByChainId: { [id: number]: string } = {
 
 export const parseSteps = (steps: IAction[]): ICommonStep[] => {
   const commonSteps: ICommonStep[] = [];
-  for (const i in steps) {
-    const step = steps[i];
+  for (const step of steps) {
     commonSteps.push({
       type: step.type,
       description: step.description,
@@ -289,6 +289,12 @@ export const parseSteps = (steps: IAction[]): ICommonStep[] => {
       toAmount: step.toAmount,
       fromChain: parseInt(step.fromChain),
       toChain: parseInt(step.toChain ?? '0'),
+      tool: step.provider,
+      toolDetails: {
+        key: step.provider,
+        logoURI: '',
+        name: step.provider,
+      }
     });
   }
   return commonSteps;
@@ -296,16 +302,15 @@ export const parseSteps = (steps: IAction[]): ICommonStep[] => {
 
 export const parseToken = (token: IToken): ICommonToken => {
   return {
-    address: token.address,
-    decimals: token.decimals,
-    symbol: token.symbol,
-    chainId: token.chainId,
-    name: token.name,
-    logoURI: token.logoURI,
-    priceUSD: token.usdPrice?.toString(),
+    address: token?.address ?? '',
+    decimals: token?.decimals ?? 0,
+    symbol: token?.symbol ?? '',
+    chainId: token?.chainId ?? '',
+    name: token?.name ?? '',
+    logoURI: token?.logoURI ?? '',
+    priceUSD: token?.usdPrice?.toString()  ?? '0',
   };
 };
-
 
 export async function getTransactionRequest(o: ISwapperParams)
   : Promise<ITransactionRequestWithEstimate | undefined> {
@@ -313,7 +318,10 @@ export async function getTransactionRequest(o: ISwapperParams)
   const tr = quote?.route.transactionRequest as (ITransactionRequest & ITransactionRequestWithEstimate);
   if (!tr) return;
   tr.to ??= tr.target ?? tr.targetAddress;
+  const gasCosts = [...quote.route.estimate.gasCosts, ...quote.route.estimate.feeCosts];
   return addEstimatesToTransactionRequest({
+    totalGasUsd: gasCosts.map((c) => parseFloat(c.amountUsd === '' ? '0': c.amountUsd)).reduce((a, b) => a + b, 0),
+    totalGasWei: BigInt(gasCosts.map((c) => c.amount).reduce((a, b) => BigInt(a) + BigInt(b), BigInt(0))),
     steps: parseSteps(quote!.route.estimate.actions ?? []),
     tr,
     inputAmountWei: BigInt(o.amountWei as string),
