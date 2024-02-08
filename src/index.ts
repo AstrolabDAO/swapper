@@ -6,7 +6,15 @@ import * as Squid from "./Squid";
 import * as LiFi from "./LiFi";
 import * as Socket from "./Socket";
 
-import { Aggregator, AggregatorId, ICommonStep, ISwapperParams, ITransactionRequestWithEstimate, Stringifiable } from "./types";
+import {
+  Aggregator,
+  AggregatorId,
+  ICommonStep,
+  ISwapperParams,
+  IToken,
+  ITransactionRequestWithEstimate,
+  Stringifiable
+} from "./types";
 
 // aggregatorId to aggregator mapping used by meta-aggregating getTransactionRequest
 export const aggregatorById: { [key: string]: Aggregator } = {
@@ -142,6 +150,54 @@ export function addEstimatesToTransactionRequest(o: IEstimateParams): ITransacti
   o.tr.totalGasUsd = o.totalGasUsd;
   o.tr.totalGasWei = o.totalGasWei;
   return o.tr;
+}
+
+export interface IStatusParams {
+  aggregatorIds: string[];
+  transactionId: string;
+  fromChainId?: string;
+  toChainId?: string;
+  txHash?: string;
+}
+
+export enum OperationStatus {
+  WAITING = "WAITING",
+  PENDING = "PENDING",
+  DONE = "DONE",
+  FAILED = "FAILED",
+  SUCCESS = "SUCCESS",
+  NEEDS_GAS = "NEEDS_GAS",
+  ONGOING = "ON_GOING",
+  PARTIAL_SUCCESS = "PARTIAL_SUCCESS",
+  NOT_FOUND = "NOT_FOUND"
+}
+
+export interface OperationStep extends ICommonStep {
+  status: OperationStatus;
+  via: string;
+  substatusMessage?: string;
+}
+
+export interface IStatusResponse {
+  id: string;
+  status: OperationStatus;
+  txHash?: string;
+  receivingTx?: string;
+  sendingTx?: string;
+  substatus?: string;
+  substatusMessage?: string;
+}
+
+export async function getStatus (o: IStatusParams)
+  : Promise<IStatusResponse|null>{
+  o.aggregatorIds ??= aggregatorsAvailable;
+  if (!o.txHash) o.txHash = o.transactionId;
+  let status = (await Promise.all(
+  o.aggregatorIds.map(async (aggregatorId) => {
+    const aggregator = aggregatorById[aggregatorId];
+    return aggregator?.getStatus?.(o);
+  }))).filter(tr => !!tr);
+  return status[0] ?? null;
 }
 
 export * from "./types";
