@@ -182,15 +182,10 @@ export interface IStatusResponse {
   id: string;
   status: OperationStatus;
   txHash?: string;
-  estimation?: any;
-  steps?: OperationStep[];
-  currentStep?: number;
   receivingTx?: string;
   sendingTx?: string;
   substatus?: string;
   substatusMessage?: string;
-  fromToken?: IToken;
-  toToken?: IToken;
 }
 
 export async function getStatus (o: IStatusParams)
