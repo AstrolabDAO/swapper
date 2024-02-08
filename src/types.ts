@@ -1,3 +1,4 @@
+import { IStatusParams, IStatusResponse } from "src";
 
 export interface IToken {
   chainId: string;
@@ -75,13 +76,14 @@ export interface ITransactionRequestWithEstimate extends TransactionRequest {
   estimatedSlippage?: string|number;
   steps?: ICommonStep[];
   approvalAddress?: string;
-  totalGasUsd: number;
-  totalGasWei: bigint;
+  totalGasUsd?: number;
+  totalGasWei?: bigint;
 }
 
 export type Aggregator = {
   routerByChainId: { [key: number]: string };
   getTransactionRequest: (o: ISwapperParams) => Promise<ITransactionRequestWithEstimate|undefined>;
+  getStatus?: (o: IStatusParams) => Promise<IStatusResponse|undefined>;
 };
 
 interface IFeeCost {

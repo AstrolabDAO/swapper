@@ -229,6 +229,8 @@ export async function getTransactionRequest(o: ISwapperParams): Promise<ITransac
       from: o.payer,
     };
     return addEstimatesToTransactionRequest({
+      totalGasUsd: 0,
+      totalGasWei: BigInt(0),
       tr,
       inputAmountWei: BigInt(o.amountWei as string),
       outputAmountWei: BigInt(quote!.routes[0].toAmount),

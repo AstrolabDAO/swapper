@@ -1,7 +1,18 @@
 import qs from "qs";
-import { addEstimatesToTransactionRequest } from "../";
-import { ICommonStep, ICustomContractCall, ISwapperParams, ITransactionRequestWithEstimate, TransactionRequest, validateQuoteParams } from "../types";
-import { IToken as ICommonToken } from "../types";
+import {
+  IStatusResponse as ICommonStatusResponse,
+  OperationStatus,
+  addEstimatesToTransactionRequest
+} from "../";
+import {
+  ICommonStep,
+  ICustomContractCall,
+  ISwapperParams,
+  ITransactionRequestWithEstimate,
+  TransactionRequest,
+  validateQuoteParams,
+  IToken as ICommonToken
+} from "../types";
 
 // Squid specific types
 interface IQuoteParams {
@@ -170,6 +181,44 @@ interface IRoute {
   params: IQuoteParams;
   transactionRequest: ITransactionRequest;
 }
+type TransactionStatus = {
+  id: string;
+  status: string;
+  gasStatus: string;
+  isGMPTransaction: boolean;
+  axelarTransactionUrl: string;
+  fromChain: ChainInfo;
+  toChain: ChainInfo;
+  timeSpent: TimeSpent;
+  error: TransactionError;
+  squidTransactionStatus: string;
+};
+
+type ChainInfo = {
+  transactionId: string;
+  blockNumber: number;
+  callEventStatus: string;
+  callEventLog: any[];
+  chainData: any;
+  transactionUrl: string;
+};
+
+type TimeSpent = {
+  call_express_executed: number;
+  express_executed_confirm: number;
+  call_confirm: number;
+  call_approved: number;
+  express_executed_approved: number;
+  total: number;
+  approved_executed: number;
+};
+
+type TransactionError = {
+  message: string;
+  txHash: string;
+  chain: string;
+};
+
 
 const apiRoot = "https://v2.api.squidrouter.com/v2";
 const apiKey = process.env?.SQUID_API_KEY;
@@ -357,10 +406,24 @@ export async function getQuote(o: ISwapperParams): Promise<IQuoteResponse | unde
   }
 }
 
+export function parseTransactionStatus(status: TransactionStatus): ICommonStatusResponse {
+  const commonStatus: ICommonStatusResponse = {
+    id: status.id,
+    status: status.squidTransactionStatus as OperationStatus,
+    txHash: status.toChain.transactionUrl,
+    receivingTx: status.toChain.transactionUrl,
+    sendingTx: status.fromChain.transactionUrl,
+    substatus: status.status,
+    substatusMessage: status.error?.message ?? '',
+  }
+  return commonStatus;
+}
+
 // Check the status of your cross-chain transfers
 // while (result.status !== "DONE" && result.status !== "FAILED")
 //   result = await getStatus(quote.tool, fromChain, toChain, tx.hash);
-export async function getStatus(o: IStatusParams) {
+export async function getStatus(o: IStatusParams)
+  : Promise<ICommonStatusResponse|undefined> {
   if (!apiKey) console.warn("missing env.SQUID_API_KEY");
   try {
     const res = await fetch(`${apiRoot}/status?${qs.stringify(o)}`, {
@@ -371,7 +434,7 @@ export async function getStatus(o: IStatusParams) {
     });
     if (res.status >= 400)
       throw new Error(`${res.status}: ${res.statusText}`);
-    return await res.json();
+    return parseTransactionStatus(await res.json());
   } catch (e) {
     console.error(`getStatus failed: ${e}`);
   }

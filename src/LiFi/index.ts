@@ -1,8 +1,21 @@
-import { ITransactionRequestWithEstimate, TransactionRequest, IToolDetails, ICommonStep, ICustomContractCall } from "../types";
 import qs from "qs";
-import { ISwapperParams, validateQuoteParams } from "../types";
-import { addEstimatesToTransactionRequest } from "../";
-import { IToken as ICommonToken, IEstimate as ICommonEstimate } from "../types";
+
+import {
+  addEstimatesToTransactionRequest,
+  IStatusResponse as ICommonStatusResponse,
+  OperationStatus,
+} from "../";
+
+import {
+  IToken as ICommonToken,
+  IEstimate as ICommonEstimate,
+  ISwapperParams,
+  validateQuoteParams,
+  ITransactionRequestWithEstimate,
+  TransactionRequest,
+  IToolDetails,
+  ICommonStep,
+} from "../types";
 
 // LiFi specific types
 export interface ILifiContractCall {
@@ -179,6 +192,68 @@ interface IBestQuote extends IStep {
   includedSteps?: IStep[];
 }
 
+interface TransactionStatus {
+  transactionId: string;
+  sending: SendingDetails;
+  receiving: ReceivingDetails;
+  lifiExplorerLink: string;
+  fromAddress: string;
+  toAddress: string;
+  tool: string;
+  status: string;
+  substatus: string;
+  substatusMessage: string;
+  metadata: Metadata;
+  bridgeExplorerLink: string;
+}
+
+interface SendingDetails {
+  txHash: string;
+  txLink: string;
+  amount: string;
+  token: TokenDetails;
+  chainId: number;
+  gasPrice: string;
+  gasUsed: string;
+  gasToken: TokenDetails;
+  gasAmount: string;
+  gasAmountUSD: string;
+  amountUSD: string;
+  value: string;
+  timestamp: number;
+}
+
+interface ReceivingDetails {
+  txHash: string;
+  txLink: string;
+  amount: string;
+  token: TokenDetails;
+  chainId: number;
+  gasPrice: string;
+  gasUsed: string;
+  gasToken: TokenDetails;
+  gasAmount: string;
+  gasAmountUSD: string;
+  amountUSD: string;
+  value: string;
+  timestamp: number;
+}
+
+interface TokenDetails {
+  address: string;
+  chainId: number;
+  symbol: string;
+  decimals: number;
+  name: string;
+  coinKey: string;
+  logoURI: string;
+  priceUSD: string;
+}
+
+interface Metadata {
+  integrator: string;
+}
+
 const apiRoot = "https://li.quest/v1";
 const apiKey = process.env?.LIFI_API_KEY;
 
@@ -186,7 +261,8 @@ export const convertParams = (o: ISwapperParams): IQuoteParams => ({
   fromToken: o.input,
   fromChain: networkById[o.inputChainId],
   toToken: o.output,
-  toAmount: o.amountWei?.toString() || undefined,
+  // if no contractCall, no toAmount
+  toAmount: o.customContractCalls?.length ? o.amountWei?.toString() || undefined : undefined,
   toChain: networkById[o.outputChainId ?? o.inputChainId],
   fromAmount: o.amountWei.toString(),
   fromAddress: o.testPayer ?? o.payer,
@@ -390,16 +466,30 @@ export async function getQuote(o: ISwapperParams): Promise<IBestQuote | undefine
   }
 }
 
+export function parseTransactionStatus(status: TransactionStatus): ICommonStatusResponse {
+  const commonStatus: ICommonStatusResponse = {
+    id: status.transactionId,
+    status: status.status as OperationStatus,
+    txHash: status.receiving?.txHash,
+    receivingTx: status.receiving.txHash,
+    sendingTx: status.sending.txHash,
+    substatus: status.substatus,
+    substatusMessage: status.substatusMessage,
+  }
+  return commonStatus;
+}
+
 // Check the status of your cross-chain transfers
 // while (result.status !== "DONE" && result.status !== "FAILED")
 //   result = await getStatus(quote.tool, fromChain, toChain, tx.hash);
-export async function getStatus(o: IStatusParams) {
+export async function getStatus(o: IStatusParams)
+: Promise<ICommonStatusResponse|undefined> {
   if (!apiKey) console.warn("missing env.LIFI_API_KEY");
   try {
     const res = await fetch(`${apiRoot}/status?${qs.stringify(o)}`);
     if (res.status >= 400)
       throw new Error(`${res.status}: ${res.statusText}`);
-    return await res.json();
+    return parseTransactionStatus(await res.json());
   } catch (e) {
     console.error(`getStatus failed: ${e}`);
   }
