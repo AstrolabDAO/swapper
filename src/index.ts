@@ -24,11 +24,12 @@ export const aggregatorById: { [key: string]: Aggregator } = {
   [AggregatorId.KYBERSWAP]: <Aggregator>KyberSwap,
   [AggregatorId.SQUID]: <Aggregator>Squid,
   [AggregatorId.LIFI]: <Aggregator>LiFi,
-  [AggregatorId.SOCKET]: <Aggregator>Socket,
+  // Socket disabled until we implement the getStatus method properly
+  // [AggregatorId.SOCKET]: <Aggregator>Socket,
 };
 
 export const aggregatorsWithContractCalls = [AggregatorId.LIFI];
-export const aggregatorsAvailable = [AggregatorId.LIFI, AggregatorId.SQUID, AggregatorId.SOCKET];
+export const aggregatorsAvailable = [AggregatorId.LIFI, AggregatorId.SQUID];
 
 /**
  * Extracts the `callData` from the `transactionRequest` (if any).
