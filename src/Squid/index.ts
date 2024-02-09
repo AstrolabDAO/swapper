@@ -370,7 +370,7 @@ export async function getTransactionRequest(o: ISwapperParams)
   const gasCosts = [...quote.route.estimate.gasCosts, ...quote.route.estimate.feeCosts];
   return addEstimatesToTransactionRequest({
     totalGasUsd: gasCosts.map((c) => parseFloat(c.amountUsd === '' ? '0': c.amountUsd)).reduce((a, b) => a + b, 0),
-    totalGasWei: BigInt(gasCosts.map((c) => c.amount).reduce((a, b) => BigInt(a) + BigInt(b), BigInt(0))),
+    totalGasWei: BigInt(gasCosts.map((c) => c.amount).reduce((a, b) => BigInt(a) + BigInt(b), BigInt(0))).toString(),
     steps: parseSteps(quote!.route.estimate.actions ?? []),
     tr,
     inputAmountWei: BigInt(o.amountWei as string),
