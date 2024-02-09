@@ -45,6 +45,7 @@ export interface ICustomContractCall {
   toAddress?: string;
   callData: string;
   gasLimit?: string;
+  inputPos?: number;
 }
 
 export interface ISwapperParams {
