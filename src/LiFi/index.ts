@@ -418,7 +418,7 @@ export async function getTransactionRequest(o: ISwapperParams): Promise<ITransac
     outputDecimals: quote!.action.toToken.decimals,
     approvalAddress: quote!.estimate.approvalAddress ?? '',
     totalGasUsd,
-    totalGasWei
+    totalGasWei: totalGasWei.toString()
   });
 }
 

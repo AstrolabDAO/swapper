@@ -77,7 +77,7 @@ export interface ITransactionRequestWithEstimate extends TransactionRequest {
   steps?: ICommonStep[];
   approvalAddress?: string;
   totalGasUsd?: number;
-  totalGasWei?: bigint;
+  totalGasWei?: string;
 }
 
 export type Aggregator = {
