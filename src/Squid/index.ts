@@ -233,9 +233,8 @@ const generateHook = (contractCall: ICustomContractCall, outputToken: string)
     callData: contractCall.callData,
     payload: {
       tokenAddress: outputToken,
-      inputPos: 1,
+      inputPos: contractCall.inputPos ?? 0,
     },
-    // todo: verify if enough gas here to pay LZ
     estimatedGas: contractCall.gasLimit ?? "20000"
   }
 }
@@ -257,10 +256,10 @@ export const convertParams = (o: ISwapperParams): IQuoteParams => ({
   receiveGasOnDestination: o.receiveGasOnDestination ?? false,
   integrator: process.env?.SQUID_PROJECT_ID ?? "astrolab-api",
   postHook: o.customContractCalls?.length ?
-    {
-      chainType: ChainType.EVM,
-      calls: [generateHook(o.customContractCalls[0], o.output)]
-    } : undefined,
+  {
+    chainType: ChainType.EVM,
+    calls: o.customContractCalls.map((c) => generateHook(c, o.output))
+  } : undefined,
 });
 
 export const routerByChainId: { [id: number]: string } = {
