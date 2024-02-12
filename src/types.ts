@@ -1,4 +1,4 @@
-import { IStatusParams, IStatusResponse } from "src";
+import { IStatusParams, IStatusResponse } from "./index";
 
 export interface IToken {
   chainId: string;
