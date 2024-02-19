@@ -122,6 +122,13 @@ export function swapperParamsToString(o: ISwapperParams, callData?: string) {
         callData ? ` (callData: ${callData.substring(0, 32)}... ${callData.length}bytes)` : ""}`;
 }
 
+export interface IGasEstimate {
+  totalGasCostUsd: number;
+  totalGasCostWei: string;
+  totalFeeCostUsd: number;
+  totalFeeCostWei: string;
+}
+
 // estimate normalization from bridge/dex aggregator consisting of the transactionRequest and raw estimated transaction output
 export interface IEstimateParams {
   steps?: ICommonStep[],
@@ -131,8 +138,7 @@ export interface IEstimateParams {
   inputDecimals: number;
   outputDecimals: number;
   approvalAddress: string;
-  totalGasUsd: number;
-  totalGasWei: string;
+  gasEstimate: IGasEstimate;
 }
 
 /**
@@ -148,8 +154,7 @@ export function addEstimatesToTransactionRequest(o: IEstimateParams): ITransacti
   o.tr.estimatedExchangeRate = o.tr.estimatedOutput / amount;
   o.tr.steps = o.steps ?? [];
   o.tr.approvalAddress = o.approvalAddress;
-  o.tr.totalGasUsd = o.totalGasUsd;
-  o.tr.totalGasWei = o.totalGasWei.toString();
+  o.tr.gasEstimate = o.gasEstimate;
   return o.tr;
 }
 
