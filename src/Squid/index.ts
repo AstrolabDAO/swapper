@@ -368,8 +368,6 @@ export async function getTransactionRequest(o: ISwapperParams)
   tr.to ??= tr.target ?? tr.targetAddress;
   const gasCosts = [...quote.route.estimate.gasCosts, ...quote.route.estimate.feeCosts];
   return addEstimatesToTransactionRequest({
-    totalGasUsd: gasCosts.map((c) => parseFloat(c.amountUsd === '' ? '0': c.amountUsd)).reduce((a, b) => a + b, 0),
-    totalGasWei: BigInt(gasCosts.map((c) => c.amount).reduce((a, b) => BigInt(a) + BigInt(b), BigInt(0))).toString(),
     steps: parseSteps(quote!.route.estimate.actions ?? []),
     tr,
     inputAmountWei: BigInt(o.amountWei as string),
@@ -377,6 +375,12 @@ export async function getTransactionRequest(o: ISwapperParams)
     inputDecimals: quote!.route.estimate.fromToken.decimals,
     outputDecimals: quote!.route.estimate.toToken.decimals,
     approvalAddress: tr.to,
+    gasEstimate: {
+      totalGasCostUsd: quote.route.estimate.gasCosts.map((c) => parseFloat(c.amountUsd === '' ? '0': c.amountUsd)).reduce((a, b) => a + b, 0),
+      totalGasCostWei: BigInt(quote.route.estimate.gasCosts.map((c) => c.amount).reduce((a, b) => BigInt(a) + BigInt(b), BigInt(0))).toString(),
+      totalFeeCostUsd: quote.route.estimate.feeCosts.map((c) => parseFloat(c.amountUsd === '' ? '0': c.amountUsd)).reduce((a, b) => a + b, 0),
+      totalFeeCostWei: BigInt(quote.route.estimate.feeCosts.map((c) => c.amount).reduce((a, b) => BigInt(a) + BigInt(b), BigInt(0))).toString(),
+    }
   });
 }
 

@@ -1,4 +1,4 @@
-import { IStatusParams, IStatusResponse } from "./index";
+import { IGasEstimate, IStatusParams, IStatusResponse } from "./index";
 
 export interface IToken {
   chainId: string;
@@ -77,8 +77,7 @@ export interface ITransactionRequestWithEstimate extends TransactionRequest {
   estimatedSlippage?: string|number;
   steps?: ICommonStep[];
   approvalAddress?: string;
-  totalGasUsd?: number;
-  totalGasWei?: string;
+  gasEstimate: IGasEstimate;
 }
 
 export type Aggregator = {
