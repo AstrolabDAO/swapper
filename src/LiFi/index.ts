@@ -367,20 +367,21 @@ export const parseEstimate = (estimate: IEstimate): ICommonEstimate => {
   };
 };
 
-export const parseSteps = (steps: IStep[]): [ICommonStep[], number, bigint] => {
-  let totalGasUsd = 0;
-  let totalGasWei = BigInt(0);
-
+export const parseSteps = (steps: IStep[]): [ICommonStep[], number, bigint, number, bigint] => {
+  let totalGasCostUsd = 0;
+  let totalGasCostWei = BigInt(0);
+  let totalFeeCostUsd = 0;
+  let totalFeeCostWei = BigInt(0);
   const commonSteps = steps.map((step) => {
     const estimate = parseEstimate(step.estimate);
 
     estimate?.gasCosts?.forEach(gasCost => {
-      totalGasUsd += parseFloat(gasCost?.amountUSD ?? '0');
-      totalGasWei += BigInt(gasCost.amount);
+      totalGasCostUsd += parseFloat(gasCost?.amountUSD ?? '0');
+      totalGasCostWei += BigInt(gasCost.amount);
     });
     estimate?.feeCosts?.forEach(feeCosts => {
-      totalGasUsd += parseFloat(feeCosts?.amountUSD ?? '0');
-      totalGasWei += BigInt(feeCosts.amount ?? '0');
+      totalFeeCostUsd += parseFloat(feeCosts?.amountUSD ?? '0');
+      totalFeeCostWei += BigInt(feeCosts.amount ?? '0');
     });
 
     return {
@@ -401,14 +402,14 @@ export const parseSteps = (steps: IStep[]): [ICommonStep[], number, bigint] => {
     };
   });
 
-  return [commonSteps, totalGasUsd, totalGasWei];
+  return [commonSteps, totalGasCostUsd, totalGasCostWei, totalFeeCostUsd, totalFeeCostWei];
 }
 
 export async function getTransactionRequest(o: ISwapperParams): Promise<ITransactionRequestWithEstimate | undefined> {
   const quote = o.customContractCalls?.length ? await getContractCallsQuote(o) : await getQuote(o);
   const tr = quote?.transactionRequest as ITransactionRequestWithEstimate;
   if (!tr) return;
-  const [steps, totalGasUsd, totalGasWei] = parseSteps(quote!.includedSteps ?? []);
+  const [steps, totalGasCostUsd, totalGasCostWei, totalFeeCostUsd, totalFeeCostWei] = parseSteps(quote!.includedSteps ?? []);
   return addEstimatesToTransactionRequest({
     steps,
     tr,
@@ -417,8 +418,12 @@ export async function getTransactionRequest(o: ISwapperParams): Promise<ITransac
     inputDecimals: quote!.action.fromToken.decimals,
     outputDecimals: quote!.action.toToken.decimals,
     approvalAddress: quote!.estimate.approvalAddress ?? '',
-    totalGasUsd,
-    totalGasWei: totalGasWei.toString()
+    gasEstimate: {
+      totalGasCostUsd,
+      totalGasCostWei: totalGasCostWei.toString(),
+      totalFeeCostUsd,
+      totalFeeCostWei: totalFeeCostWei.toString()
+    }
   });
 }
 
