@@ -5,6 +5,7 @@ import * as KyberSwap from "./KyberSwap";
 import * as Squid from "./Squid";
 import * as LiFi from "./LiFi";
 import * as Socket from "./Socket";
+import * as Unizen from "./Unizen";
 
 import {
   Aggregator,
@@ -24,6 +25,7 @@ export const aggregatorById: { [key: string]: Aggregator } = {
   [AggregatorId.KYBERSWAP]: <Aggregator>KyberSwap,
   [AggregatorId.SQUID]: <Aggregator>Squid,
   [AggregatorId.LIFI]: <Aggregator>LiFi,
+  [AggregatorId.UNIZEN]: <Aggregator>Unizen,
   // Socket disabled until we implement the getStatus method properly
   // [AggregatorId.SOCKET]: <Aggregator>Socket,
 };
