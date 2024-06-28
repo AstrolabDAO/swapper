@@ -31,7 +31,7 @@ export const aggregatorById: { [key: string]: Aggregator } = {
 };
 
 export const aggregatorsWithContractCalls = [AggregatorId.LIFI];
-export const aggregatorsAvailable = [AggregatorId.LIFI, AggregatorId.SQUID];
+export const aggregatorsAvailable = [AggregatorId.LIFI, AggregatorId.SQUID, AggregatorId.UNIZEN];
 
 /**
  * Extracts the `callData` from the `transactionRequest` (if any).
