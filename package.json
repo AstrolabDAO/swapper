@@ -79,6 +79,7 @@
   "dependencies": {
     "@ethersproject/experimental": "^5.7.0",
     "@types/qs": "^6.9.9",
+    "@unizen-io/unizen-contract-addresses": "^0.0.14",
     "dotenv": "^16.3.1",
     "qs": "^6.11.2"
   }
