@@ -1,7 +1,5 @@
 import qs from "qs";
 
-import contractAddresses from "@unizen-io/unizen-contract-addresses/production.json";
-
 import {
   addEstimatesToTransactionRequest
 } from "../";
@@ -48,8 +46,18 @@ const getExcludedDexesList = (o: ISwapperParams): Map<string,string[]> => {
   return res;
 }
 
-const getTargetAddress = (version: string, chainId: number) : string => {
-  return ((contractAddresses as any)[version] as any)[networkById[chainId]];
+const getTargetAddress = async (version: string, chainId: number) : Promise<string | undefined> => {
+  const baseUrlSpender = `${apiRoot}/${chainId}/approval/spender?contractVersion=${version}`;
+  try {
+    const responseSpender = await fetch(baseUrlSpender, {
+      headers: apiKey ? { "x-api-key": apiKey } : {}
+    });
+    const responseJson = await responseSpender.json();
+    return responseJson.address;
+} catch (e) {
+    console.error(`unizen getTargetAddress failed: ${e}`);
+    return undefined;
+  }
 }
 
 export const convertQuoteParams = (o: ISwapperParams): IQuoteParams => ({
@@ -75,9 +83,11 @@ export async function getTransactionRequest(o: ISwapperParams): Promise<ITransac
   const bestQuote = quotes[0];
   const tradeType = isCrossSwap ? undefined : (bestQuote as IQuoteResult).tradeType;
   const swapData = await getSwapData(o.inputChainId, bestQuote.transactionData, bestQuote.nativeValue, o.payer, o.receiver ?? o.payer, tradeType);
+  const spender = await getTargetAddress(swapData!.contractVersion, o.inputChainId);
+  console.log('spender', spender);
   const tr = {
     from: o.payer,
-    to: getTargetAddress(swapData!.contractVersion, o.inputChainId),
+    to: spender,
     value: o.amountWei,
     data: swapData?.data,
     gasLimit: Number(BigInt(swapData!.estimateGas)) * 2
