@@ -7,6 +7,7 @@ import { AggregatorId, ISwapperParams } from "../../src/types";
 import { getTransactionRequestByAggregatorCases } from "../utils/cases";
 import { getTransactionRequest as lifiTxRequest } from "../../src/LiFi";
 import { getTransactionRequest as squidTxRequest } from "../../src/Squid";
+import { getTransactionRequest as unizenTxRequest } from "../../src/Unizen";
 
 const swapperParams: ISwapperParams = {
   // op:usdc -> arb:dai
@@ -15,7 +16,7 @@ const swapperParams: ISwapperParams = {
   outputChainId: 42161,
   output: "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
   amountWei: "1000000000",
-  payer: '0x489ee077994B6658eAfA855C308275EAd8097C4A',
+  payer: '0xC373f2C4efFD31626c79eFCd891aA7759cF61886',
   maxSlippage: 100,
 }
 
@@ -28,7 +29,7 @@ describe("swapper.client.test", function () {
     console.log("beforeEach");
   });
 
-  describe("Get Quote", function () {
+ describe("Get Quote", function () {
     it("Squid", async function () {
       for (const tr of (await getTransactionRequestByAggregatorCases(AggregatorId.SQUID)))
         expect(tr?.data).to.be.a("string");
@@ -49,6 +50,10 @@ describe("swapper.client.test", function () {
       for (const tr of (await getTransactionRequestByAggregatorCases(AggregatorId.ZERO_X)))
         expect(tr?.data).to.be.a("string");
     });
+    it("Unizen", async function () {
+      for (const tr of (await getTransactionRequestByAggregatorCases(AggregatorId.UNIZEN)))
+        expect(tr?.data).to.be.a("string");
+    });
   })
 });
 
@@ -61,6 +66,10 @@ describe("swapper.client.test.estimate", function () {
     });
     it("Li.Fi", async function () {
       const tr = await lifiTxRequest(swapperParams);
+      expect(tr?.data).to.be.a("string");
+    });
+    it("Unizen", async function () {
+      const tr = await unizenTxRequest(swapperParams);
       expect(tr?.data).to.be.a("string");
     });
   })
