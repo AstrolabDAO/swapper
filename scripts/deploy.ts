@@ -1,8 +1,6 @@
-import { deployAll } from "@astrolabs/hardhat";
-import { getProtocolAddresses, getSalts } from "../test/utils/addresses";
+import { deployAll, getRegistryLatest, getSalts } from "@astrolabs/hardhat";
 
-let protocolAddr = getProtocolAddresses();
-let salts = getSalts();
+let [protocolAddr, salts] = [getRegistryLatest(), getSalts()];
 
 async function main() {
   await deployAll({
@@ -12,11 +10,8 @@ async function main() {
     useCreate3: true,
     create3Salt: salts.Swapper, // used only if not already deployed
     args: [protocolAddr.DAOCouncil, false, false, true],
-    // overrides: {
-    //   gasLimit: 2_500_000,
-    // },
-    // deployed: true,
-    // address: "0x00004E6c833C7A39FDcf037A634a23C6134CAAA0", // use if already deployed to verify
+    // overrides: { gasLimit: 2_500_000 }, // required for gnosis-chain (wrong rpc estimate)
+    // address: protocolAddr.Swapper, // use if already deployed (eg. to verify)
   });
 }
 

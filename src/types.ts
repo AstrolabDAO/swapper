@@ -77,7 +77,7 @@ export interface ITransactionRequestWithEstimate extends TransactionRequest {
   estimatedSlippage?: string|number;
   steps?: ICommonStep[];
   approvalAddress?: string;
-  gasEstimate: IGasEstimate;
+  gasEstimate?: IGasEstimate;
 }
 
 export type Aggregator = {

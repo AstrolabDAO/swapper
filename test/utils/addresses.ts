@@ -1,21 +1,4 @@
 import { networkBySlug } from "@astrolabs/hardhat";
-const sfetch = require('sync-fetch')
-
-let salts: any;
-export function getSalts() {
-  if (!salts) {
-    salts = sfetch("https://cdn.astrolab.fi/data/salts.json").json();
-  }
-  return salts;
-}
-
-let protocolAddr;
-export function getProtocolAddresses() {
-  if (!protocolAddr) {
-    protocolAddr = sfetch("https://registry.astrolab.fi/deployments/_latest.json").json();
-  }
-  return protocolAddr;
-}
 
 export type ChainAddresses = {
   accounts?: { [token: string]: string },
