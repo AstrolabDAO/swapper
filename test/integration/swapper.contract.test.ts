@@ -7,19 +7,21 @@ dotenv.config({ override: true });
 
 import { ethers, network, setBalances, TransactionRequest, deploy, getDeployer, config, changeNetwork } from "@astrolabs/hardhat";
 import { getTransactionRequest, swapperParamsToString, weiToString } from "../../src/";
-import addresses, { ChainAddresses } from "../utils/addresses";
+import addresses, { ChainAddresses, getProtocolAddresses, getSalts } from "../utils/addresses";
 import { cases, filterCases, fuzzCases } from "../utils/cases";
 import { AggregatorId, ISwapperParams } from "../../src/types";
 import { HttpNetworkConfig, Network } from "hardhat/types";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
 let networkSlug = "tenderly";
-let maxTopup = BigNumber.from(weiToString(5*1e18));
+let maxTopup = BigNumber.from(weiToString(5 * 1e18));
 let blockNumber: number;
 let a: ChainAddresses;
 let swapper: Contract;
 let deployer: Signer & { address: string };
 let provider = ethers.provider;
+let protocolAddr = getProtocolAddresses();
+let salts = getSalts();
 
 async function ensureWhitelisted(swapper: Contract, addresses: string[]) {
   const whitelistPromises = addresses.map(async (addr) => {
@@ -102,7 +104,7 @@ async function _swap(o: ISwapperParams) {
     tr.to,
     tr.data,
     { gasLimit: Math.max(Number(tr.gasLimit ?? 0), 10_000_000) }
-    );
+  );
   console.log(`received response: ${JSON.stringify(ok, null, 2)}`);
   assert(!!ok);
   const received = (await output.balanceOf(o.payer)).sub(outputBalanceBeforeSwap);
@@ -117,7 +119,12 @@ describe("swapper.contract.test", function () {
     a = addresses[config.networks[networkSlug].chainId!];
     blockNumber = await provider.getBlockNumber();
     deployer = await getDeployer() as any;
-    swapper = await deploy({ contract: "Swapper", verify: true });
+    swapper = await deploy({
+      name: "Swapper",
+      contract: "Swapper",
+      verify: true,
+      args: [deployer, false, false, true]
+    });
     console.log(
       `Connected to ${network.name} (id ${network.config.chainId}), block ${blockNumber}`,
     );
