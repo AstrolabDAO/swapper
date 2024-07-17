@@ -405,7 +405,7 @@ export async function getQuote(o: ISwapperParams): Promise<IQuoteResponse | unde
       throw new Error(`${res.status}: ${res.statusText} - ${await res.text?.() ?? '?'}`);
     return await res.json();
   } catch (e) {
-    throw new Error(`getQuote failed: ${e}`);
+    console.error(`getQuote failed: ${e}`);
   }
 }
 
@@ -439,6 +439,6 @@ export async function getStatus(o: IStatusParams)
       throw new Error(`${res.status}: ${res.statusText}`);
     return parseTransactionStatus(await res.json());
   } catch (e) {
-    throw new Error(`getStatus failed: ${e}`);
+    console.error(`getStatus failed: ${e}`);
   }
 }
