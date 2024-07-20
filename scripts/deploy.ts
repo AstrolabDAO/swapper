@@ -10,8 +10,8 @@ async function main() {
     useCreate3: true,
     create3Salt: salts.Swapper, // used only if not already deployed
     args: [protocolAddr.DAOCouncil, false, false, true],
-    // overrides: { gasLimit: 2_500_000 }, // required for gnosis-chain (wrong rpc estimate)
-    // address: protocolAddr.Swapper, // use if already deployed (eg. to verify)
+    // overrides: { gasLimit: 3_500_000 }, // required for gnosis-chain (wrong rpc estimate)
+    address: protocolAddr.Swapper, // use if already deployed (eg. to verify)
   });
 }
 

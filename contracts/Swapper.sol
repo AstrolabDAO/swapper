@@ -48,8 +48,17 @@ contract Swapper is Ownable2Step {
   );
   event Whitelisted(address indexed account); // caller/asset/router whitelist
   event RemovedFromWhitelist(address indexed account);
-  event OwnershipTransferred(address indexed prevOwner, address indexed newOwner, uint256 timestamp);
-  event OwnershipTransferInitiated(address indexed prevOwner, address indexed newOwner, uint256 timestamp);
+  event OwnershipTransferred(
+    address indexed prevOwner,
+    address indexed newOwner,
+    uint256 timestamp
+  );
+  event OwnershipTransferInitiated(
+    address indexed prevOwner,
+    address indexed newOwner,
+    uint256 timestamp
+  );
+  event Rescued(address indexed token, uint256 amount);
 
   error CallRestricted();
   error RouterError();
@@ -62,9 +71,9 @@ contract Swapper is Ownable2Step {
     bool _restictRouter,
     bool _approveMax
   ) Ownable(_owner) {
-    if (_restrictCaller) restrictions.setBit(0);
-    if (_restictRouter) restrictions.setBit(1);
-    if (_approveMax) restrictions.setBit(4);
+    if (_restrictCaller) restrictions = restrictions.setBit(0);
+    if (_restictRouter) restrictions = restrictions.setBit(1);
+    if (_approveMax) restrictions = restrictions.setBit(4);
   }
 
   /**
@@ -235,15 +244,15 @@ contract Swapper is Ownable2Step {
 
     (IERC20 input, IERC20 output) = (IERC20(_input), IERC20(_output));
 
+    input.safeTransferFrom(msg.sender, address(this), _amountIn);
+
     (uint256 inputBefore, uint256 outputBefore) = (
-      input.balanceOf(msg.sender),
+      input.balanceOf(address(this)),
       output.balanceOf(msg.sender)
     );
 
-    input.safeTransferFrom(msg.sender, address(this), _amountIn);
-
     if (input.allowance(address(this), _targetRouter) < _amountIn)
-      input.approve(
+      input.forceApprove(
         _targetRouter,
         isApproveMax() ? type(uint256).max : _amountIn
       );
@@ -252,7 +261,7 @@ contract Swapper is Ownable2Step {
     if (!ok) revert RouterError();
 
     received = output.balanceOf(msg.sender) - outputBefore;
-    spent = inputBefore - input.balanceOf(msg.sender);
+    spent = inputBefore - input.balanceOf(address(this));
 
     if (spent < 1 || received < 1) revert UnexpectedOutput();
     if (received < _minAmountOut) revert SlippageTooHigh();
@@ -260,7 +269,7 @@ contract Swapper is Ownable2Step {
     // return leftover input tokens to msg.sender
     if (spent < _amountIn) input.safeTransfer(msg.sender, _amountIn - spent);
 
-    if (isAutoRevoke()) input.approve(_targetRouter, 0);
+    if (isAutoRevoke()) input.forceApprove(_targetRouter, 0);
     emit Swapped(msg.sender, _input, _output, _amountIn, received);
   }
 
@@ -503,7 +512,11 @@ contract Swapper is Ownable2Step {
    * @param newOwner The address to transfer ownership to
    */
   function transferOwnership(address newOwner) public override onlyOwner {
-    emit OwnershipTransferInitiated(owner(), newOwner, pendingOwnershipTimestamp);
+    emit OwnershipTransferInitiated(
+      owner(),
+      newOwner,
+      pendingOwnershipTimestamp
+    );
     super.transferOwnership(newOwner);
     pendingOwnershipTimestamp = block.timestamp + ownershipCooldown;
   }
@@ -518,10 +531,28 @@ contract Swapper is Ownable2Step {
       "Ownership transfer cooldown not met"
     );
     require(
-      block.timestamp <=
-        pendingOwnershipTimestamp + ownershipAcceptanceWindow,
+      block.timestamp <= pendingOwnershipTimestamp + ownershipAcceptanceWindow,
       "Ownership acceptance window expired"
     );
     super.acceptOwnership();
+  }
+
+  /**
+   * @notice Rescues the contract's `_token` (ERC20 or native) full balance by sending it to `msg.sender` if owner
+   * @param _token Token to be rescued - Use address(1) for native/gas tokens (ETH)
+   * @dev Simplified, cooldown-less AsRescuable (cf. https://github.com/AstrolabDAO/strats/blob/main/src/abstract/AsRescuable.sol)
+   */
+  function rescue(address _token) external onlyOwner {
+    uint256 rescued;
+    // send to admin multisig
+    if (_token == address(1)) {
+      rescued = address(this).balance;
+      (bool ok, ) = payable(msg.sender).call{value: rescued}("");
+      require(ok);
+    } else {
+      rescued = IERC20(_token).balanceOf(address(this));
+      IERC20(_token).safeTransfer(msg.sender, rescued);
+    }
+    emit Rescued(_token, rescued);
   }
 }
