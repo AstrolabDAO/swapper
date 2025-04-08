@@ -1,8 +1,4 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-# Run lint-staged for code formatting and linting
-# bun lint-staged
+#!/usr/bin/env bash
 
 # Run eslint check
 echo "Running eslint check..."
