@@ -1,17 +1,5 @@
 #!/usr/bin/env bash
 
-# Run eslint check
-echo "Running eslint check..."
-bun run eslint:check
-
-# Run type checking
-echo "Running type checking..."
-bun run typecheck
-
-# Run prettier fix
-echo "Running prettier fix..."
-bun run prettier:fix
-
-# Run tests
-# echo "Running tests..."
-# bun run test
+# Run pre-commit script
+echo "Running pre-commit workflow..."
+bun run pre-commit

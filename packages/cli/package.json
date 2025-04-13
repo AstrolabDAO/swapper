@@ -1,0 +1,40 @@
+{
+  "name": "@btr-supply/swap-cli",
+  "version": "1.3.0",
+  "type": "module",
+  "main": "./dist/cli.js",
+  "bin": {
+    "btr-swap": "./dist/cli.js"
+  },
+  "repository": "https://github.com/BTRSupply/btr-swap",
+  "author": "BTR Supply <contact@btr.supply>",
+  "license": "MIT",
+  "description": "Command-line interface for the BTR Swap SDK",
+  "keywords": [
+    "btr",
+    "swap",
+    "bridge",
+    "cli",
+    "DeFi",
+    "ethereum"
+  ],
+  "scripts": {
+    "start": "bun run ./src/cli.ts"
+  },
+  "files": [
+    "dist/",
+    "LICENSE",
+    "README.md"
+  ],
+  "dependencies": {
+    "@btr-supply/swap": "1.3.0",
+    "dotenv": "^16.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "eslint": "^9.23.0",
+    "prettier": "^3.5.3",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.2"
+  }
+}

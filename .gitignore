@@ -1,6 +1,6 @@
 # ide
 .idea
-.vscode
+# .vscode
 
 # os
 .DS_Store

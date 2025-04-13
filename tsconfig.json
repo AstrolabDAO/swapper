@@ -1,20 +1,24 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "outDir": "./dist",
-    "rootDir": "./",
     "declaration": true,
-    "baseUrl": "./",
+    "sourceMap": true,
+    "composite": true,
+    "declarationMap": true,
+    "outDir": "./dist",
+    "rootDir": ".",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["packages/core/src/*"]
     }
   },
-  "include": ["src/**/*", "tests/**/*", "index.ts"],
-  "exclude": ["node_modules", "dist", "artifacts"]
+  "include": ["index.ts", "tests/**/*.ts"],
+  "exclude": ["node_modules", "dist"],
+  "references": [{ "path": "./packages/core" }, { "path": "./packages/cli" }]
 }

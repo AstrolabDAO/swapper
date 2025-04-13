@@ -1,0 +1,107 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Unit: Serialization",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": [
+        "test",
+        "--timeout",
+        "10000",
+        "tests/unit/serialization.test.ts"
+      ],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "DEBUG": "*"
+      },
+      "internalConsoleOptions": "openOnSessionStart"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Integration: Simple Monochain",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": [
+        "test",
+        "--timeout",
+        "30000",
+        "tests/integration/simple-mono.test.ts"
+      ],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "DEBUG": "*"
+      },
+      "internalConsoleOptions": "openOnSessionStart"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Integration: Fuzz",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": [
+        "test",
+        "--timeout",
+        "30000",
+        "tests/integration/fuzz.test.ts"
+      ],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "DEBUG": "*"
+      },
+      "internalConsoleOptions": "openOnSessionStart"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Core Integration Tests (Simple + Fuzz)",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": [
+        "test",
+        "--timeout",
+        "30000",
+        "tests/integration/{simple-mono,fuzz}.test.ts"
+      ],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "DEBUG": "*"
+      },
+      "internalConsoleOptions": "openOnSessionStart"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Integration: CLI",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": [
+        "test",
+        "--timeout",
+        "30000",
+        "tests/integration/cli.test.ts"
+      ],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "DEBUG": "*"
+      },
+      "internalConsoleOptions": "openOnSessionStart"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "All Tests",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": [
+        "test",
+        "--timeout",
+        "30000",
+        "tests/{unit,integration}/*.test.ts"
+      ],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "DEBUG": "*"
+      },
+      "internalConsoleOptions": "openOnSessionStart"
+    }
+  ]
+}
