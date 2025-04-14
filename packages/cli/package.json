@@ -1,6 +1,6 @@
 {
   "name": "@btr-supply/swap-cli",
-  "version": "1.5.0",
+  "version": "1.7.0",
   "type": "module",
   "main": "./dist/cli.js",
   "bin": {
@@ -25,7 +25,7 @@
     "dist/index.js"
   ],
   "dependencies": {
-    "@btr-supply/swap": "1.5.0",
+    "@btr-supply/swap": "1.7.0",
     "dotenv": "^16.5.0"
   },
   "devDependencies": {
