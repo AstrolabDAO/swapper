@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 const fs = require("fs"),
   path = require("path");
+
+// Parse command line arguments
 const bumpType = process.argv[2] || "minor";
 
 // Validate bump type
@@ -68,6 +70,12 @@ const updatePackage = (pkgPath, isCLI = false) => {
 // Update package versions
 const corePkgUpdated = updatePackage(path.resolve("./packages/core/package.json"));
 const cliPkgUpdated = updatePackage(path.resolve("./packages/cli/package.json"), true);
+
+// Write the version information to a file to be consumed by other scripts
+fs.writeFileSync(
+  path.resolve("./.version-info.json"),
+  JSON.stringify({ oldVersion, newVersion }, null, 2)
+);
 
 if (corePkgUpdated && cliPkgUpdated) {
   console.log(`✅ All versions updated from ${oldVersion} to ${newVersion}`);

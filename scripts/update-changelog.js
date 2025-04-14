@@ -2,14 +2,37 @@
 const fs = require('fs');
 const path = require('path');
 
-// Get version from version-bump.js, CLI arg, or package.json
+// Try to get version from various sources in order
 let version;
-try {
-  version = require('./version-bump').newVersion;
-} catch {
-  version = process.argv[2] || JSON.parse(fs.readFileSync('./package.json', 'utf8')).version;
+
+// 1. Try version-info.json first (most reliable coordination between scripts)
+const versionInfoPath = path.resolve('./.version-info.json');
+if (fs.existsSync(versionInfoPath)) {
+  try {
+    const versionInfo = JSON.parse(fs.readFileSync(versionInfoPath, 'utf8'));
+    version = versionInfo.newVersion;
+  } catch {
+    // Continue to next option if file exists but parsing fails
+  }
 }
 
+// 2. Try command-line argument
+if (!version) {
+  version = process.argv[2];
+}
+
+// 3. Fall back to package.json
+if (!version) {
+  try {
+    const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+    version = packageJson.version;
+  } catch {
+    console.error('Error: Could not determine version from any source');
+    process.exit(1);
+  }
+}
+
+// Validate version format
 if (!version || !/^\d+\.\d+\.\d+$/.test(version)) {
   console.error(`Error: Invalid version format: ${version}`);
   process.exit(1);
