@@ -1,5 +1,5 @@
 <div align="center">
-  <img border-radius="25px" max-height="250px" src="./banner.png" />
+  <img border-radius="25px" max-height="250px" src="https://raw.githubusercontent.com/BTRSupply/btr-swap/refs/heads/main/banner.png" />
   <h1>BTR Swap</h1>
   <p>
     <strong>Cross-chain swap aggregation SDK</strong>
