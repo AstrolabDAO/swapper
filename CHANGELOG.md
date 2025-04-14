@@ -4,6 +4,20 @@
 
 ### Added
 
+- 
+
+### Changed
+
+- 
+
+### Fixed
+
+- 
+
+## [1.4.0] - 2025-04-14
+
+### Added
+
 - CI/CD pipelines from ./scripts for streamlined publishing to both GitHub and npmjs
 - Integrated oxlint as a drop-in replacement for eslint with stricter code quality rules
 - Unit testing and integration testing suite
@@ -28,6 +42,7 @@
 - Generic Bridge+Swap aggregator for compatible EVMs
 
 [1.4.0]: https://github.com/BTRSupply/btr-swap/compare/v1.3.0...v1.4.0
+[1.4.0]: https://github.com/BTRSupply/btr-swap/compare/v1.4.0...v1.4.0
 [1.3.0]: https://github.com/BTRSupply/btr-swap/releases/tag/v1.3.0
 
 ---
