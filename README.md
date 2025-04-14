@@ -8,8 +8,9 @@
     <a href="https://www.npmjs.com/package/@btr-supply/swap"><img alt="NPM Package" src="https://img.shields.io/npm/v/@btr-supply/swap.svg?style=flat-square&logo=npm&logoColor=white&labelColor=d42b26&color=black" width="auto" height="22" style="border-radius:6px; border:1px solid #eee;"/></a>
     <!-- <a href="https://btr.supply/docs"><img alt="Docs" src="https://img.shields.io/badge/Docs-212121?style=flat-square&logo=readthedocs&logoColor=white" width="auto" height="22" style="border-radius:6px; border:1px solid #eee;"/></a> -->
     <a href="https://opensource.org/licenses/MIT"><img alt="License" src="https://img.shields.io/badge/license-MIT-000000?style=flat-square&logo=open-source-initiative&logoColor=white&labelColor=4c9c3d" width="auto" height="22" style="border-radius:6px; border:1px solid #eee;"/></a>
+    <a href="https://t.me/BTRSupply"><img alt="Telegram" src="https://img.shields.io/badge/Telegram-24b3e3?style=flat-square&logo=telegram&logoColor=white" width="auto" height="22" style="border-radius:6px; border:1px solid #eee;"/></a>
     <a href="https://twitter.com/BTRSupply"><img alt="X (Twitter)" src="https://img.shields.io/badge/@BTRSupply-000000?style=flat-square&logo=x&logoColor=white" width="auto" height="22" style="border-radius:6px; border:1px solid #eee;"/></a>
-    <a href="https://t.me/BTRSupply"><img alt="Telegram" src="https://img.shields.io/badge/Telegram-24b3e3?style=flat-square&logo=telegram&logoColor=white" width="auto" height="22" style="border-radius:6px; border:1px solid #eee;"/></a></p>
+    </p>
 </div>
 
 BTR Swap is a liquidity meta-aggregator powering monochain and cross-chain swaps, blending liquidity and bridge aggregators. Inspired by [LlamaSwap](https://github.com/LlamaSwap/), server-side friendly and cross-chain capable.
@@ -175,6 +176,8 @@ async function handleSwap() {
 
 ### CLI Usage
 
+> **Note:** The following CLI commands require prior installation of `@btr-supply/swap-cli` as shown above.
+
 ```bash
 # Basic same-chain swap (ETH -> DAI on Ethereum)
 btr-swap quote \
@@ -235,11 +238,11 @@ git clone https://github.com/BTRSupply/btr-swap.git && cd btr-swap
 bun install
 
 # Development tasks
-bun run lint       # Check code style
-bun run lint:fix   # Fix code style
-bun run typecheck  # Verify types
-bun run build      # Build all packages
-bun run test       # Run all tests
+bun run lint: Run `oxlint` to check for code style and potential issues.
+bun run lint:fix: Run `oxlint --fix` to automatically fix linting and formatting issues.
+bun run typecheck: Check TypeScript types across all packages.
+bun run build: Build all packages
+bun run test: Run all tests
 ```
 
 ## Build and Publish Process
@@ -251,14 +254,15 @@ The project uses a monorepo structure with the following packages:
 
 ```bash
 # Build all packages
-bun run build       # Builds both SDK and CLI
+bun run build: Builds both SDK and CLI
 
 # Pre-commit checks
-bun run pre-commit  # Runs prettier, eslint, build, version sync, and unit tests
+bun run pre-commit: Runs `oxlint --fix`, `clean`, `build`, and `test:unit`. Recommended before committing changes.
 
 # Publish packages
-bun run publish:packages  # Publish stable version (runs pre-commit first)
-bun run publish:next      # Publish with 'next' tag (runs pre-commit first)
+bun run publish:patch: Runs `pre-commit`, bumps the patch version, and publishes packages to npm.
+bun run publish:minor: Runs `pre-commit`, bumps the minor version, and publishes packages to npm.
+bun run publish:major: Runs `pre-commit`, bumps the major version, and publishes packages to npm.
 
 # Install CLI globally from local build
 bun run install:cli
@@ -266,11 +270,10 @@ bun run install:cli
 
 The pre-commit process ensures:
 
-1. Code formatting (Prettier)
-2. Code linting (ESLint)
-3. Clean and fresh builds
-4. Version synchronization across packages
-5. Unit tests pass
+1. Code formatting and linting (`oxlint`)
+2. Clean and fresh builds
+3. Version synchronization across packages
+4. Unit tests pass
 
 This process is automatically executed by:
 
@@ -291,3 +294,47 @@ BTR Swap enhances the [AstrolabDAO/swapper](https://github.com/AstrolabDAO/swapp
 ## License
 
 [MIT](LICENSE)
+
+## Contribution Guidelines
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Make your changes.
+4. Ensure code quality by running `bun run pre-commit`.
+5. Commit your changes with clear messages.
+6. Push your branch and open a pull request.
+
+### Code Style and Linting
+
+This project uses `oxlint` for code formatting and linting.
+
+- Run `bun run lint` to check for issues.
+- Run `bun run lint:fix` to automatically fix issues.
+
+The configuration can be found in `.oxlint.toml`.
+
+## Release Process
+
+This project follows [Semantic Versioning](https://semver.org/) and uses a standardized release process:
+
+1. **Prepare the release**:
+
+   - Add your changes to the "Unreleased" section of the CHANGELOG.md file
+   - Use categories: Added, Changed, Deprecated, Removed, Fixed, Security
+
+2. **Release commands**:
+
+   - For patch releases: `bun run publish:patch`
+   - For minor releases: `bun run publish:minor`
+   - For major releases: `bun run publish:major`
+
+3. **What happens during release**:
+   - Code is linted, typechecked, built, and tested
+   - Version is bumped in all package.json files
+   - CHANGELOG.md is updated with the new version and date
+   - Packages are published to npm
+   - Changes are committed to git
+   - A git tag is created and pushed
+   - GitHub Actions creates a release with notes from CHANGELOG.md

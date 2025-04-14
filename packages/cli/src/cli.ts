@@ -14,7 +14,7 @@ import * as path from "path";
 
 import { config as loadDotenv } from "dotenv";
 
-// Import from the core package using relative paths
+// Import from the core package
 import {
   compactTrs,
   getAllTimedTr,
@@ -25,8 +25,11 @@ import {
   defaultAggregators,
   MAX_SLIPPAGE_BPS,
   config,
-} from "../../core/src/index.js";
-import { AggId, DisplayMode, SerializationMode, IBtrSwapCliParams } from "../../core/src/types.js";
+  AggId,
+  DisplayMode,
+  SerializationMode,
+  IBtrSwapCliParams,
+} from "@btr-supply/swap";
 
 const HELP_MESSAGE = `
 BTR Swap CLI - Get quotes from BTR Swap SDK
@@ -197,16 +200,16 @@ function parseJsonConfig(argName: string, argValue: any): { [key: string]: any }
 /** Apply config overrides from JSON arguments */
 function applyConfigOverrides(
   apiKeys?: Record<string, string>,
-  referrers?: Record<string, string | number>, // Allow numbers based on help text
+  referrer?: Record<string, string | number>, // Allow numbers based on help text
   integrators?: Record<string, string>,
   feesBps?: Record<string, number>,
 ) {
-  if (!apiKeys && !referrers && !integrators && !feesBps) return;
+  if (!apiKeys && !referrer && !integrators && !feesBps) return;
 
   Object.keys(config).forEach((aggId) => {
     const agg = aggId as AggId;
     if (apiKeys?.[agg]) config[agg].apiKey = apiKeys[agg];
-    if (referrers?.[agg] !== undefined) config[agg].referrer = referrers[agg]; // Allow string or number
+    if (referrer?.[agg] !== undefined) config[agg].referrer = referrer[agg]; // Allow string or number
     if (integrators?.[agg]) config[agg].integrator = integrators[agg];
     if (feesBps?.[agg] !== undefined) {
       const fee = Number(feesBps[agg]); // Ensure it's treated as a number
@@ -299,7 +302,7 @@ async function runCli() {
     // Parse configuration overrides
     const configOverrides = {
       apiKeys: parseJsonConfig("api-keys", args["api-keys"]),
-      referrers: parseJsonConfig("referrer-codes", args["referrer-codes"]),
+      referrer: parseJsonConfig("referrer-codes", args["referrer-codes"]),
       integrators: parseJsonConfig("integrator-ids", args["integrator-ids"]),
       feesBps: parseJsonConfig("fees-bps", args["fees-bps"]),
     };
@@ -307,7 +310,7 @@ async function runCli() {
     // Apply configuration overrides
     applyConfigOverrides(
       configOverrides.apiKeys,
-      configOverrides.referrers,
+      configOverrides.referrer,
       configOverrides.integrators,
       configOverrides.feesBps,
     );
@@ -380,7 +383,7 @@ async function runCli() {
       aggIds: aggregators,
       apiKeys: configOverrides.apiKeys,
       integratorIds: configOverrides.integrators,
-      referrerCodes: configOverrides.referrers,
+      referrerCodes: configOverrides.referrer,
       feesBps: configOverrides.feesBps,
       displayModes: displayModes,
       serializationMode: serializationMode,

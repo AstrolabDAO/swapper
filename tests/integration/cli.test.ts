@@ -86,7 +86,7 @@ describe("btr-swap CLI", function () {
         // Can't verify the path
         this.skip();
       }
-    } catch (error) {
+    } catch {
       // If this test fails, it's likely because we're using the fallback "btr-swap" executable
       // which may not be in PATH during testing
       console.warn("CLI executable not found, using fallback");

@@ -1,0 +1,82 @@
+name: Create GitHub Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Setup Node.js for npm registry
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build packages
+        run: bun run build
+
+      - name: Get version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Extract release notes
+        id: extract_release_notes
+        uses: ffurrer2/extract-release-notes@v1
+        with:
+          changelog_file: CHANGELOG.md
+
+      - name: Pack npm packages
+        run: |
+          cd packages/core
+          npm pack
+          mv btr-supply-swap-${{ steps.get_version.outputs.VERSION }}.tgz ../../btr-supply-swap-${{ steps.get_version.outputs.VERSION }}.tgz
+          cd ../cli
+          npm pack
+          mv btr-supply-swap-cli-${{ steps.get_version.outputs.VERSION }}.tgz ../../btr-supply-swap-cli-${{ steps.get_version.outputs.VERSION }}.tgz
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release v${{ steps.get_version.outputs.VERSION }}
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: ${{ steps.extract_release_notes.outputs.release_notes }}
+          files: |
+            btr-supply-swap-${{ steps.get_version.outputs.VERSION }}.tgz
+            btr-supply-swap-cli-${{ steps.get_version.outputs.VERSION }}.tgz
+
+      # Optional: Also publish to GitHub Packages if you want
+      - name: Setup Node.js for GitHub Packages
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@BTRSupply"
+
+      - name: Publish to GitHub Packages
+        run: |
+          # Update package.json files to use GitHub repository URL format
+          find packages -name "package.json" -exec sed -i 's|"repository": "https://github.com/BTRSupply/btr-swap"|"repository": "git://github.com/BTRSupply/btr-swap.git"|g' {} \;
+
+          # Publish packages to GitHub Packages
+          npm publish --workspaces
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

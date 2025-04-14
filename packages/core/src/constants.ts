@@ -308,7 +308,7 @@ export const addresses: { [chainId: number]: ChainAddresses } = {
       // flagships
       WETH: ["0x4200000000000000000000000000000000000006", "WETH", 18],
       WGAS: ["0x4200000000000000000000000000000000000006", "WGAS", 18],
-      WBTC: ["0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf", "WBTC", 8], // using cbBTC for mocking 0x0555E30da8f98308EdB960aa94C0Db47230d2B9c
+      WBTC: ["0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf", "WBTC", 8],
       cbBTC: ["0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf", "cbBTC", 8],
       // staking
       wstETH: ["0xc1cba3fcea344f92d9239c08c0568f6f2f0ee452", "wstETH", 18],
@@ -400,7 +400,7 @@ export const addresses: { [chainId: number]: ChainAddresses } = {
  * Index tokens by address for direct lookups
  */
 Object.values(addresses).forEach((chainData) => {
-  Object.entries(chainData.tokens).forEach(([symbol, tokenInfo]) => {
+  Object.entries(chainData.tokens).forEach(([_symbol, tokenInfo]) => {
     const [address] = tokenInfo;
     if (address && !chainData.tokens[address]) {
       chainData.tokens[address] = tokenInfo;

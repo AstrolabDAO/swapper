@@ -1,6 +1,6 @@
 {
   "name": "@btr-supply/swap-cli",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "type": "module",
   "main": "./dist/cli.js",
   "bin": {
@@ -22,19 +22,15 @@
     "start": "bun run ./src/cli.ts"
   },
   "files": [
-    "dist/",
-    "LICENSE",
-    "README.md"
+    "dist/index.js"
   ],
   "dependencies": {
-    "@btr-supply/swap": "1.3.0",
+    "@btr-supply/swap": "1.4.0",
     "dotenv": "^16.5.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
-    "eslint": "^9.23.0",
-    "prettier": "^3.5.3",
-    "rimraf": "^6.0.1",
-    "typescript": "^5.8.2"
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.5.4"
   }
 }

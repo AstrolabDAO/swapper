@@ -130,7 +130,7 @@ export class KyberSwap extends BaseAggregator {
     });
   };
 
-  public async getQuote(p: IBtrSwapParams): Promise<any | undefined> {
+  public async getQuote(_p: IBtrSwapParams): Promise<any | undefined> {
     console.warn("[KyberSwap] getQuote not implemented, use getTransactionRequest.");
     return undefined;
   }

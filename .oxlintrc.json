@@ -1,0 +1,77 @@
+{
+  "extends": ["oxlint:recommended"],
+  "plugins": ["typescript"],
+  "categories": ["correctness", "suspicious", "performance", "security", "style"],
+  "rules": {
+    "suspicious/no-explicit-any": "error",
+    "suspicious/no-unused-vars": {
+      "level": "error",
+      "options": {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
+      }
+    },
+    "suspicious/no-array-delete": "error",
+    "suspicious/no-empty-object-type": "error",
+    "suspicious/no-floating-promises": "error",
+    "suspicious/no-for-in-array": "error",
+    "suspicious/no-misused-promises": "error",
+    "suspicious/no-redundant-type-constituents": "error",
+    "style/no-console": "warn",
+    "style/prefer-const": "error",
+    "style/consistent-return": "error",
+    "style/no-magic-numbers": "warn",
+    "style/indent": ["error", 2],
+    "correctness/no-duplicate-enum-values": "error",
+    "correctness/no-duplicate-type-constituents": "error",
+    "security/no-implied-eval": "error",
+    "correctness/no-compare-neg-zero": "error",
+    "correctness/no-obj-calls": "error",
+    "correctness/no-regex-spaces": "error",
+    "correctness/use-isnan": "error",
+    "performance/no-unnecessary-catch": "warn",
+    "performance/no-delete": "warn",
+    "style/eqeqeq": "error",
+    "style/no-var": "error",
+    "style/no-empty": "warn",
+    "style/semicolon": ["error", "always"]
+  },
+  "ignores": [
+    "node_modules/",
+    "dist/",
+    "build/",
+    "coverage/",
+    "scripts/**",
+    "*.config.js",
+    "*.config.mjs",
+    "*.config.ts"
+  ],
+  "include": [
+    "packages/*/src/**/*.js",
+    "packages/*/src/**/*.jsx",
+    "packages/*/src/**/*.ts",
+    "packages/*/src/**/*.tsx",
+    "tests/**/*.js",
+    "tests/**/*.ts",
+    "index.ts"
+  ],
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "ecmaVersion": 2022,
+    "sourceType": "module"
+  },
+  "formatter": {
+    "enabled": true,
+    "strict": true,
+    "lineWidth": 100,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "trailingCommas": "all",
+    "quoteStyle": "double",
+    "jsxQuoteStyle": "double",
+    "semicolons": "always",
+    "maxEmptyLines": 2,
+    "arrowParens": "always"
+  }
+}

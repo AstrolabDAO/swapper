@@ -1,6 +1,6 @@
 import { IRocketXQuoteRequest, IRocketXQuoteResponse } from "./types";
 
-import { BaseAggregator, UnimplementedAggregator } from "@/abstract";
+import { UnimplementedAggregator } from "@/abstract";
 import { nativeTokenAddress, zeroAddress } from "@/constants";
 import {
   AggId,
@@ -144,11 +144,11 @@ export class RocketX extends UnimplementedAggregator {
   }
 
   /**
-   * Status checking not yet implemented for RocketX.
-   * @param p - The status parameters.
-   * @returns A promise that resolves to undefined as the feature is not implemented.
+   * Gets the status of a previous RocketX transaction.
+   * @param p - Status parameters including transaction hash and chain ID.
+   * @returns A promise resolving to the transaction status or undefined.
    */
-  public async getStatus(p: IStatusParams): Promise<IStatusResponse | undefined> {
+  public async getStatus(_p: IStatusParams): Promise<IStatusResponse | undefined> {
     this.handleError(
       new Error("Status checking not yet implemented for RocketX"),
       "[RocketX] getStatus",

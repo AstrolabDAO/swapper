@@ -14,7 +14,6 @@ import {
 } from "@/types";
 import {
   addEstimatesToTr,
-  emptyCostEstimate,
   emptyEstimate,
   fetchJson,
   formatError,

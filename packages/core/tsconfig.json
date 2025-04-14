@@ -4,12 +4,23 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "baseUrl": ".",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     },
     "composite": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "tests"],
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "tests"
+  ],
   "references": [] // Core doesn't reference other local packages directly
 }

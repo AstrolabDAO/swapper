@@ -162,7 +162,7 @@ export class Firebird extends BaseAggregator {
     tx: Partial<TransactionRequest>,
     params: IBtrSwapParams,
     quote: IFirebirdQuoteResponse,
-    encodedData: IFirebirdEncodedData,
+    _encodedData: IFirebirdEncodedData,
   ): ITransactionRequestWithEstimate => {
     const outputAmountWei = quote.quoteData?.maxReturn?.totalTo ?? "0";
     const inputAmount = Number(params.inputAmountWei) / 10 ** params.input.decimals;

@@ -6,7 +6,7 @@ const aggregators = [AggId.LIFI, AggId.SOCKET, AggId.SQUID, AggId.RANGO, AggId.U
 const MAX_TEST_CASES = 5; // to avoid overloading the APIs
 
 describe("Meta-Aggregator Fuzzing Tests", () => {
-  TESTED_CHAIN_IDS.forEach((chainId) => {
+  TESTED_CHAIN_IDS.forEach((_chainId) => {
     // Process aggregators sequentially to avoid overloading APIs
     for (const aggId of aggregators) {
       describe(`Aggregator: ${aggId}`, function () {

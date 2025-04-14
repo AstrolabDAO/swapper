@@ -7,7 +7,6 @@ import {
 } from "./types";
 
 import { BaseAggregator } from "@/abstract";
-import { nativeTokenAddress, zeroAddress } from "@/constants";
 import { AggId, IStatusResponse, OpStatus } from "@/types";
 import {
   IBtrSwapParams,

@@ -90,9 +90,7 @@ export class Socket extends BaseAggregator {
       if (tx.gasFees?.gasAmount) {
         try {
           costs.gasCostWei += BigInt(tx.gasFees.gasAmount);
-        } catch (e) {
-          // Ignoring invalid BigInt conversion errors to maintain processing
-        }
+        } catch {}
       }
     });
 

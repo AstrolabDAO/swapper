@@ -20,5 +20,12 @@
   },
   "include": ["index.ts", "tests/**/*.ts"],
   "exclude": ["node_modules", "dist"],
-  "references": [{ "path": "./packages/core" }, { "path": "./packages/cli" }]
+  "references": [
+    {
+      "path": "./packages/core"
+    },
+    {
+      "path": "./packages/cli"
+    }
+  ]
 }

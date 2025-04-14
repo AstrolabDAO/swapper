@@ -3,11 +3,26 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "moduleResolution": "Node",
+    "module": "ESNext",
+    "resolveJsonModule": true,
+    "paths": {
+      "@btr-supply/swap": [
+        "../core/dist"
+      ]
+    }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"],
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
   "references": [
-    { "path": "../core" } // CLI depends on core
+    {
+      "path": "../core"
+    } // CLI depends on core
   ]
 }

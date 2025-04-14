@@ -2,7 +2,7 @@ import { ICowSwapQuote, ICowSwapQuoteResponse } from "./types";
 
 import { JITAggregator } from "@/abstract";
 import { zeroAddress } from "@/constants";
-import { AggId, IStatusResponse, OpStatus, TransactionRequest } from "@/types";
+import { AggId, IStatusResponse, TransactionRequest } from "@/types";
 import {
   IBtrSwapParams,
   IStatusParams,
@@ -235,7 +235,7 @@ export class CowSwap extends JITAggregator {
 
       // Add the raw quote data needed for signing to customData
       result.customData = {
-        ...(result.customData || {}),
+        ...result.customData,
         cowSwapQuote: quoteResponse.quote,
       };
 
@@ -247,7 +247,7 @@ export class CowSwap extends JITAggregator {
   }
 
   // getStatus remains unchanged for now
-  public async getStatus(p: IStatusParams): Promise<IStatusResponse | undefined> {
+  public async getStatus(_p: IStatusParams): Promise<IStatusResponse | undefined> {
     // ... implementation ...
     return undefined; // Placeholder
   }

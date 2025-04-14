@@ -74,7 +74,7 @@ export abstract class BaseAggregator {
    * @param chainId - The chain ID.
    * @returns The API root URL or undefined if not supported.
    */
-  protected getApiRoot(chainId: number): string {
+  protected getApiRoot(_chainId: number): string {
     return this.baseApiUrl;
   }
 
@@ -115,7 +115,7 @@ export abstract class BaseAggregator {
    * @param params - Parameters identifying the transaction (e.g., tx hash, chain IDs).
    * @returns A promise resolving to the transaction status, or undefined if not supported/found.
    */
-  public async getStatus(params: IStatusParams): Promise<IStatusResponse | undefined> {
+  public async getStatus(_params: IStatusParams): Promise<IStatusResponse | undefined> {
     console.warn(`[${this.id}] getStatus is not implemented.`);
     return undefined; // Default implementation: not supported
   }
@@ -198,7 +198,7 @@ export abstract class UnimplementedAggregator extends BaseAggregator {
    * @param params - BTR Swap parameters.
    * @returns Aggregator-specific parameters or undefined.
    */
-  protected convertParams(params: IBtrSwapParams): Record<string, any> | undefined {
+  protected convertParams(_params: IBtrSwapParams): Record<string, any> | undefined {
     notImplemented("convertParams");
     return undefined;
   }
@@ -208,7 +208,7 @@ export abstract class UnimplementedAggregator extends BaseAggregator {
    * @param params - BTR Swap parameters.
    * @returns A promise resolving to the quote or undefined.
    */
-  public async getQuote(params: IBtrSwapParams): Promise<any | undefined> {
+  public async getQuote(_params: IBtrSwapParams): Promise<any | undefined> {
     notImplemented("getQuote");
     return undefined;
   }
@@ -219,7 +219,7 @@ export abstract class UnimplementedAggregator extends BaseAggregator {
    * @returns A promise resolving to the transaction request or undefined.
    */
   public async getTransactionRequest(
-    params: IBtrSwapParams,
+    _params: IBtrSwapParams,
   ): Promise<ITransactionRequestWithEstimate | undefined> {
     notImplemented("getTransactionRequest");
     return undefined;

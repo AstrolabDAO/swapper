@@ -76,7 +76,7 @@ export class OpenOcean extends BaseAggregator {
    * Provides a minimal implementation for the abstract getQuote method.
    * OpenOcean's transaction logic primarily uses the swap endpoint.
    */
-  public async getQuote(p: IBtrSwapParams): Promise<any | undefined> {
+  public async getQuote(_p: IBtrSwapParams): Promise<any | undefined> {
     // This implementation doesn't need to fetch a quote as getTransactionRequest
     // handles the combined quote/swap call.
     // Return undefined or throw if a separate quote call is strictly needed elsewhere.

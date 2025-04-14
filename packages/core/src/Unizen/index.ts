@@ -331,7 +331,7 @@ export class Unizen extends BaseAggregator {
     }
   }
 
-  public async getStatus(p: IStatusParams): Promise<any | undefined> {
+  public async getStatus(_p: IStatusParams): Promise<any | undefined> {
     console.warn("Unizen getStatus not implemented");
     return undefined;
   }
