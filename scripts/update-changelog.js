@@ -9,7 +9,7 @@ try {
   const versionInfo = require('./version-bump');
   version = versionInfo.newVersion;
   console.log(`Using version ${version} from version-bump.js`);
-} catch (error) {
+} catch (_) {
   // Fallback to command line argument or package.json
   version = process.argv[2];
 
@@ -19,7 +19,7 @@ try {
       const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
       version = packageJson.version;
       console.log(`Using version ${version} from package.json`);
-    } catch (err) {
+    } catch (_) {
       console.error('Error: Could not determine version. Please provide it as a command line argument.');
       process.exit(1);
     }
