@@ -112,3 +112,6 @@ test-report.*
 reports/
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.*
+
+# Temporary build info files
+.version-info.json
