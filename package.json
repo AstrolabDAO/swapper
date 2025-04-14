@@ -31,7 +31,7 @@
     "pre-commit": "bun run lint:fix && bun run typecheck && bun run build && bun run test:unit",
     "commit:version": "git add . && git commit -m \"chore: bump version to v$npm_package_version\"",
     "create:github-tag": "git tag -a v$npm_package_version -m \"Release v$npm_package_version: @btr-supply/swap and @btr-supply/swap-cli\" && git push origin v$npm_package_version",
-    "update:changelog": "node scripts/update-changelog.js $npm_package_version",
+    "update:changelog": "node scripts/update-changelog.js",
     "publish:patch": "bun run pre-commit && bun run version:bump:patch && bun run update:changelog && npm publish --workspaces && bun run commit:version && bun run create:github-tag",
     "publish:minor": "bun run pre-commit && bun run version:bump:minor && bun run update:changelog && npm publish --workspaces && bun run commit:version && bun run create:github-tag",
     "publish:major": "bun run pre-commit && bun run version:bump:major && bun run update:changelog && npm publish --workspaces && bun run commit:version && bun run create:github-tag",
