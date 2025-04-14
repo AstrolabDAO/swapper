@@ -6,7 +6,11 @@
   "bin": {
     "btr-swap": "./dist/cli.js"
   },
-  "repository": "https://github.com/BTRSupply/btr-swap",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BTRSupply/btr-swap.git",
+    "directory": "packages/cli"
+  },
   "author": "BTR Supply <contact@btr.supply>",
   "license": "MIT",
   "description": "Command-line interface for the BTR Swap SDK",
@@ -22,8 +26,14 @@
     "start": "bun run ./src/cli.ts"
   },
   "files": [
-    "dist/index.js"
+    "dist/",
+    "README.md",
+    "CHANGELOG.md"
   ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "dependencies": {
     "@btr-supply/swap": "1.7.0",
     "dotenv": "^16.5.0"

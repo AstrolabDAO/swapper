@@ -23,7 +23,11 @@
       "import": "./dist/types.js"
     }
   },
-  "repository": "https://github.com/BTRSupply/btr-swap",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BTRSupply/btr-swap.git",
+    "directory": "packages/core"
+  },
   "author": "BTR Supply <contact@btr.supply>",
   "license": "MIT",
   "description": "Generic Bridge+Swap aggregator for compatible EVMs",
@@ -38,9 +42,14 @@
   ],
   "scripts": {},
   "files": [
-    "dist/index.js",
-    "dist/index.d.ts"
+    "dist/",
+    "README.md",
+    "CHANGELOG.md"
   ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "devDependencies": {
     "@types/chai": "^5.2.1",
     "@types/mocha": "^10.0.10",

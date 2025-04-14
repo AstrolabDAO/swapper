@@ -6,7 +6,10 @@
   "workspaces": [
     "packages/*"
   ],
-  "repository": "https://github.com/BTRSupply/btr-swap",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BTRSupply/btr-swap.git"
+  },
   "author": "BTR Supply <contact@btr.supply>",
   "license": "MIT",
   "description": "Generic Bridge+Swap aggregator for compatible EVMs",

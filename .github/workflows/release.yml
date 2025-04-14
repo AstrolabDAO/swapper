@@ -5,6 +5,10 @@ on:
     tags:
       - "v*"
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,6 +28,7 @@ jobs:
         with:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
+          # scope: "@BTRSupply" # Scope is needed for GPR, not npmjs
 
       - name: Install dependencies
         run: bun install
@@ -41,7 +46,7 @@ jobs:
         with:
           changelog_file: CHANGELOG.md
 
-      - name: Pack npm packages
+      - name: Pack npm packages for release assets
         run: |
           cd packages/core
           npm pack
@@ -49,6 +54,7 @@ jobs:
           cd ../cli
           npm pack
           mv btr-supply-swap-cli-${{ steps.get_version.outputs.VERSION }}.tgz ../../btr-supply-swap-cli-${{ steps.get_version.outputs.VERSION }}.tgz
+          cd ../.. # Return to root directory
 
       - name: Create GitHub Release
         id: create_release
@@ -63,7 +69,6 @@ jobs:
             btr-supply-swap-${{ steps.get_version.outputs.VERSION }}.tgz
             btr-supply-swap-cli-${{ steps.get_version.outputs.VERSION }}.tgz
 
-      # Optional: Also publish to GitHub Packages if you want
       - name: Setup Node.js for GitHub Packages
         uses: actions/setup-node@v4
         with:
@@ -73,8 +78,8 @@ jobs:
 
       - name: Publish to GitHub Packages
         run: |
-          # Update package.json files to use GitHub repository URL format
-          find packages -name "package.json" -exec sed -i 's|"repository": "https://github.com/BTRSupply/btr-swap"|"repository": "git://github.com/BTRSupply/btr-swap.git"|g' {} \;
+          # Update workspace package.json publishConfig for GitHub Packages
+          find packages -name "package.json" -exec npx json -I -f {} -e "this.publishConfig.registry='https://npm.pkg.github.com/'" \;
 
           # Publish packages to GitHub Packages
           npm publish --workspaces
