@@ -1,6 +1,6 @@
 {
   "name": "btr-swap-monorepo",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "private": true,
   "type": "module",
   "workspaces": [
@@ -32,9 +32,9 @@
     "version:bump:minor": "node scripts/version-bump.js minor",
     "version:bump:major": "node scripts/version-bump.js major",
     "pre-commit": "bun run lint:fix && bun run typecheck && bun run build && bun run test:unit",
-    "_get_new_version": "node -p 'require(\"./.version-info.json\").newVersion'",
-    "commit:version": "VERSION=$(bun run _get_new_version) && git add . && git commit -m \"chore: bump version to v$VERSION\"",
-    "create:github-tag": "VERSION=$(bun run _get_new_version) && git tag -a v$VERSION -m \"Release v$VERSION: @btr-supply/swap and @btr-supply/swap-cli\" && git push origin v$VERSION",
+    "get_new_version": "node -p 'require(\"./.version-info.json\").newVersion'",
+    "commit:version": "VERSION=$(bun run get_new_version) && git add . && git commit -m \"chore: bump version to v$VERSION\"",
+    "create:github-tag": "VERSION=$(bun run get_new_version) && git tag -a v$VERSION -m \"Release v$VERSION: @btr-supply/swap and @btr-supply/swap-cli\" && git push origin v$VERSION",
     "update:changelog": "node scripts/update-changelog.js",
     "publish:patch": "bun run pre-commit && bun run version:bump:patch && bun run update:changelog && npm publish --workspaces && bun run commit:version && bun run create:github-tag",
     "publish:minor": "bun run pre-commit && bun run version:bump:minor && bun run update:changelog && npm publish --workspaces && bun run commit:version && bun run create:github-tag",

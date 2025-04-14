@@ -1,6 +1,6 @@
 {
   "name": "@btr-supply/swap-cli",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "type": "module",
   "main": "./dist/cli.js",
   "bin": {
@@ -26,16 +26,14 @@
     "start": "bun run ./src/cli.ts"
   },
   "files": [
-    "dist/",
-    "README.md",
-    "CHANGELOG.md"
+    "dist/index.js"
   ],
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@btr-supply/swap": "1.7.0",
+    "@btr-supply/swap": "1.8.0",
     "dotenv": "^16.5.0"
   },
   "devDependencies": {
