@@ -1,18 +1,18 @@
 # Changelog
 
-## [1.4.0] - 2025-04-14
+## [1.5.0] - 2025-04-14
 
 ### Added
 
-- 
+-
 
 ### Changed
 
-- 
+-
 
 ### Fixed
 
-- 
+-
 
 ## [1.4.0] - 2025-04-14
 
@@ -41,8 +41,8 @@
 - Initial release of @btr-supply/swap and @btr-supply/swap-cli
 - Generic Bridge+Swap aggregator for compatible EVMs
 
+[1.5.0]: https://github.com/BTRSupply/btr-swap/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/BTRSupply/btr-swap/compare/v1.3.0...v1.4.0
-[1.4.0]: https://github.com/BTRSupply/btr-swap/compare/v1.4.0...v1.4.0
 [1.3.0]: https://github.com/BTRSupply/btr-swap/releases/tag/v1.3.0
 
 ---
