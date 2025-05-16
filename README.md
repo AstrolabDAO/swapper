@@ -1,3 +1,6 @@
+> ⚠️ **This repository is archived.**  
+> Further development has moved to its actively maintained fork by **BTR Supply**: [https://github.com/btr-supply/btr-swap](https://github.com/btr-supply/btr-swap)
+
 <div align="center">
   <img border-radius="25px" max-height="250px" src="./swapper.png" />
   <h1>Swapper</h1>
